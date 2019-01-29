@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Семен Оробинский](https://up.htmlacademy.ru/php/8/user/479713).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Зубов] (https://htmlacademy.ru/profile/serj).
 
 ---
 
