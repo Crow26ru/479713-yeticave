@@ -153,7 +153,7 @@ $products = [
             <li class="nav__item">
                 <a href="pages/all-lots.html"><?=$categories[$key];?></a>
             </li>
-            <? endforeach; ?>
+            <?php endforeach; ?>
         </ul>
     </nav>
     <div class="main-footer__bottom container">
