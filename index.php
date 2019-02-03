@@ -50,6 +50,13 @@ $products = [
     "image" => "img/lot-6.jpg"
   ],
 ];
+
+// Функция для форматирования суммы
+function show_price($price) {
+  $price = ceil($price);
+  $price = number_format($price, 0, "", " ");
+  return $price . " &#8381;";
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -129,7 +136,7 @@ $products = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$item["price"]; ?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=show_price($item["price"]); ?><!--Предыдущий способ вывода символа рубля<b class="rub">р</b>--></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
