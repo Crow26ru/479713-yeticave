@@ -22,10 +22,9 @@
             foreach($products as $position => $item):
         ?>
         <li class="lots__item lot">
-
-        // Реализация защиты от XSS-атаки
-        // Вырезаем все теги из каждого элемента лота, которые можем получить от пользователя
             <?php
+            // Реализация защиты от XSS-атаки
+            // Вырезаем все теги из каждого элемента лота, которые можем получить от пользователя
                 foreach($item as $item_element) {
                     $item_element = strip_tags($item_element);
                 }
