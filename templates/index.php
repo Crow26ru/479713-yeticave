@@ -22,19 +22,12 @@
             foreach($products as $position => $item):
         ?>
         <li class="lots__item lot">
-            <?php
-            // Реализация защиты от XSS-атаки
-            // Вырезаем все теги из каждого элемента лота, которые можем получить от пользователя
-                foreach($item as $item_element) {
-                    $item_element = strip_tags($item_element);
-                }
-            ?>
             <div class="lot__image">
-                <img src="<?=$item["image"]; ?>" width="350" height="260" alt="<?=$item["name"]; ?>">
+                <img src="<?=$item["image"]; ?>" width="350" height="260" alt="<?=strip_tags($item["name"]); ?>">
             </div>
             <div class="lot__info">
-                <span class="lot__category"><?=$item["category"]; ?></span>
-                <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?=$item["name"]; ?></a></h3>
+                <span class="lot__category"><?=strip_tags($item["category"]); ?></span>
+                <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?=strip_tags($item["name"]); ?></a></h3>
                 <div class="lot__state">
                     <div class="lot__rate">
                         <span class="lot__amount">Стартовая цена</span>
