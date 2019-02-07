@@ -20,11 +20,11 @@ function get_time_of_end_lot() {
     date_default_timezone_set('Europe/Moscow');
 
     $current_time = time();
-    $time_live_a_lot = strtotime('tomorrow midnight');
+    $time_lives_a_lot = strtotime('tomorrow midnight');
 
-    $time_live_a_lot = $time_live_a_lot - $current_time;
-    $hours = floor($time_live_a_lot / 3600);
-    $minutes = floor($time_live_a_lot % 3600 / 60);
+    $time_lives_a_lot = $time_lives_a_lot - $current_time;
+    $hours = floor($time_lives_a_lot / 3600);
+    $minutes = floor($time_lives_a_lot % 3600 / 60);
 
     if ($hours < 10) {
         $hours = '0' . $hours;
@@ -34,6 +34,6 @@ function get_time_of_end_lot() {
         $minutes = '0' . $minutes;
     }
     
-    $time_live_a_lot = $hours . ':' . $minutes;
-    print($time_live_a_lot);
+    $time_lives_a_lot = $hours . ':' . $minutes;
+    print($time_lives_a_lot);
 }
