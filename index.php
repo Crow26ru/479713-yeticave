@@ -61,7 +61,16 @@ function show_price($price) {
 
 require("functions.php");
 
-$page_content = include_template("index.php", ["categories" => $categories, "products" => $products]);
-$layout_content = include_template("layout.php", ["content" => $page_content, "user_name" => $user_name, "is_auth" => $is_auth, "page_name" => $page_name, "categories" => $categories]);
+$page_content = include_template("index.php",   [
+                                                  "categories"    => $categories,
+                                                  "products"      => $products
+                                                ]);
+$layout_content = include_template("layout.php", [
+                                                   "content"    => $page_content,
+                                                   "user_name"  => $user_name,
+                                                   "is_auth"    => $is_auth,
+                                                   "page_name"  => $page_name,
+                                                   "categories" => $categories
+                                                 ]);
 
 print($layout_content);
