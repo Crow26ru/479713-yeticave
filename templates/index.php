@@ -34,7 +34,8 @@
                         <span class="lot__cost"><?=show_price($item["price"]); ?><!--Предыдущий способ вывода символа рубля<b class="rub">р</b>--></span>
                     </div>
                     <div class="lot__timer timer">
-                        12:23
+                        <?php get_time_of_end_lot();?>
+                        <!--12:23-->
                     </div>
                 </div>
             </div>
