@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Europe/Moscow');
+
 function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -17,8 +19,6 @@ function include_template($name, $data) {
 }
 
 function get_time_of_end_lot() {
-    date_default_timezone_set('Europe/Moscow');
-
     $current_time = time();
     $time_lives_a_lot = strtotime('tomorrow midnight');
 
@@ -35,5 +35,5 @@ function get_time_of_end_lot() {
     }
     
     $time_lives_a_lot = $hours . ':' . $minutes;
-    print($time_lives_a_lot);
+    return $time_lives_a_lot;
 }
