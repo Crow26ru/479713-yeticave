@@ -33,7 +33,19 @@ function get_time_of_end_lot() {
     if ($minutes < 10) {
         $minutes = '0' . $minutes;
     }
-    
+
     $time_lives_a_lot = $hours . ':' . $minutes;
     return $time_lives_a_lot;
+}
+
+function change_to_simple_array(...$arr) {
+    $new_arr = [];
+
+    foreach($arr as $key => $value) {
+        foreach($value as $val) {
+            array_push($new_arr, $val['categories']);
+        }
+    }
+
+    return $new_arr;
 }
