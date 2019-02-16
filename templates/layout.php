@@ -42,8 +42,8 @@
     </div>
 </header>
 
-<main class="container">
-  <?= $content; ?>
+<main <?php if($page_name === 'Главная - YetiCave'): ?>class="container"<?php endif; ?>>
+    <?= $content; ?>
 </main>
 </div>
 

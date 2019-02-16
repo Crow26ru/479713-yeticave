@@ -1,6 +1,18 @@
 <?php
+
+define('HUMAN_MINUTES', ' минут назад');
+define('HUMAN_HOURS', ' часов назад');
+
 date_default_timezone_set('Europe/Moscow');
 
+// Функция для форматирования суммы
+function show_price($price) {
+    $price = ceil($price);
+    $price = number_format($price, 0, "", " ");
+    return $price . " &#8381;";
+}
+
+// Функция шаблонизатор 
 function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -18,9 +30,10 @@ function include_template($name, $data) {
     return $result;
 }
 
-function get_time_of_end_lot() {
+// Отображение окончания лота в формате ЧЧ:ММ
+function get_time_of_end_lot($time = 'tomorrow midnight') {
     $current_time = time();
-    $time_lives_a_lot = strtotime('tomorrow midnight');
+    $time_lives_a_lot = strtotime($time);
 
     $time_lives_a_lot = $time_lives_a_lot - $current_time;
     $hours = floor($time_lives_a_lot / 3600);
@@ -38,14 +51,26 @@ function get_time_of_end_lot() {
     return $time_lives_a_lot;
 }
 
-function change_to_simple_array(...$arr) {
-    $new_arr = [];
+// Отображение времени в удобном виде
+function show_user_frendly_time($time) {
+    $current_time = time();
+    $time_lives_a_lot = strtotime($time);
+    
 
-    foreach($arr as $key => $value) {
-        foreach($value as $val) {
-            array_push($new_arr, $val['categories']);
-        }
+    $time_lives_a_lot = $current_time - $time_lives_a_lot;
+    $hours = floor($time_lives_a_lot / 3600);
+    $minutes = floor($time_lives_a_lot % 3600 / 60);
+    
+    if($hours == 0) {
+        $time = $minutes . HUMAN_MINUTES;
+        return $time;
+    } elseif($hours > 0 && $hours < 24) {
+        $time = $hours . HUMAN_HOURS;
+        return $time;
     }
-
-    return $new_arr;
+    
+    $date = date('d.m.Y', strtotime($time));
+    $time = date('H:i', strtotime($time));
+    
+    return $date . ' ' . $time;
 }
