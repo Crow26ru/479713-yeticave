@@ -101,22 +101,22 @@ if(isset($_GET['id'])) {
             }
         
             // Подключаем шаблоны
-            $rates_content = include_template('history-rates.php', [
-                                                                       'rates' => $rates_history
-                                                                   ]);
+            $categories_content = include_template('categories.php', ['categories'  => $categories]);
+            
+            $rates_content = include_template('history-rates.php', ['rates' => $rates_history]);
             
             $main_content = include_template('lot.php', [
-                                                             'categories'  => $categories,
-                                                             'lot'         => $lot,
-                                                             'rates'       => $rates_content,
-                                                             'total_rate'  => $rates_total
+                                                             'categories_list' => $categories_content,
+                                                             'lot'             => $lot,
+                                                             'rates'           => $rates_content,
+                                                             'total_rate'      => $rates_total
                                                         ]);
             $all_content = include_template('layout.php', [
-                                                              'content'    => $main_content,
-                                                              'categories' => $categories,
-                                                              'user_name'  => $user_name,
-                                                              'is_auth'    => $is_auth,
-                                                              'page_name'  => $page_name
+                                                              'content'        => $main_content,
+                                                              'categories'     => $categories,
+                                                              'user_name'      => $user_name,
+                                                              'is_auth'        => $is_auth,
+                                                              'page_name'      => $page_name
                                                           ]);
         
             print($all_content);
