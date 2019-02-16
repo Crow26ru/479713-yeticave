@@ -4,10 +4,10 @@
     <ul class="promo__list">
         <!--заполните этот список из массива категорий-->
         <?php
-            foreach($categories as $key => $value):
+            foreach($categories as $value):
         ?>
         <li class="promo__item promo__item--boards">
-            <a class="promo__link" href="pages/all-lots.html"><?=$categories[$key];?></a>
+            <a class="promo__link" href="pages/all-lots.html"><?=$value;?></a>
         </li>
         <?php endforeach; ?>
     </ul>
