@@ -55,6 +55,9 @@ function get_time_of_end_lot($time, $is_hh_mm_ss_format = false) {
             $time_lives_a_lot = $hours . ':' . $minutes . ':' . $seconds;
             return $time_lives_a_lot;
         }
+
+        $time_lives_a_lot = $hours . ':' . $minutes . ':' . $seconds;
+        return $time_lives_a_lot;
     }
 
     $time_lives_a_lot = $hours . ':' . $minutes;
