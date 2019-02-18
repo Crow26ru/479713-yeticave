@@ -51,11 +51,20 @@ define(
 
 $categories = [];
 $is_auth = rand(0, 1);
+$is_good = false;
 $user_name = 'Семён';
 $page_name = 'Аукцион - YetiCave';
 
 require_once('functions.php');
 require_once('connect.php');
+
+$rows_categories = mysqli_query($con, CATEGORIES_LIST);
+$rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
+
+// Преобразование двумерного ассоциативного массива в простой массив категорий
+foreach($rows_categories as $value) {
+    array_push($categories, $value['categories']);
+}
 
 // Проверяем существует ли параметр id, переданный в запросе GET
 if(isset($_GET['id'])) {
@@ -67,8 +76,6 @@ if(isset($_GET['id'])) {
     mysqli_stmt_execute($stmt);
     $lot = mysqli_stmt_get_result($stmt);
     
-    $rows_categories = mysqli_query($con, CATEGORIES_LIST);
-    
     $stmt = mysqli_prepare($con, RATES_HISTORY);
     mysqli_stmt_bind_param($stmt, 'i', $lot_id);
     mysqli_stmt_execute($stmt);
@@ -79,18 +86,12 @@ if(isset($_GET['id'])) {
     mysqli_stmt_execute($stmt);
     $rates_total = mysqli_stmt_get_result($stmt);
 
-    if ($lot && $rows_categories) {
+    if ($lot) {
         $lot = mysqli_fetch_all($lot, MYSQLI_ASSOC);
-        $rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
         $rates_history = mysqli_fetch_all($rates_history, MYSQLI_ASSOC);
         $rates_total = mysqli_fetch_all($rates_total, MYSQLI_ASSOC);
         
-        if ($lot && $rows_categories) {
-            // Преобразование двумерного ассоциативного массива в простой массив категорий
-            foreach($rows_categories as $value) {
-                array_push($categories, $value['categories']);
-            }
-        
+        if ($lot) {    
             // Преобразование двумерного ассоциативного массива из одного элемента в ассоциативный массив лота
             if (isset($lot[0])){
                 $lot = $lot[0];
@@ -120,12 +121,23 @@ if(isset($_GET['id'])) {
                                                           ]);
         
             print($all_content);
-        } else {
-            http_response_code(404);
+            $is_good = true;
         }
-    } else {
-        http_response_code(500);
     }
-} else {
+}
+
+if(!$is_good) {
     http_response_code(404);
+    $categories_content = include_template('categories.php', ['categories'      => $categories]);
+
+    $fail_content = include_template('404.php',              ['categories_list' => $categories_content]);
+
+    $all_content = include_template('layout.php',            [
+                                                              'content'         => $fail_content,
+                                                              'categories'      => $categories,
+                                                              'user_name'       => $user_name,
+                                                              'is_auth'         => $is_auth,
+                                                              'page_name'       => $page_name
+                                                             ]);
+    print($all_content);
 }
