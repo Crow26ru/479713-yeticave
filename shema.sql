@@ -13,9 +13,7 @@ CREATE TABLE users (
     password VARCHAR(32)  NOT NULL,
     name     VARCHAR(48)  NOT NULL,
     contact  VARCHAR(256) NOT NULL,
-    avatar   VARCHAR(48),
-    lot_id   INT,
-    rate_id  INT
+    avatar   VARCHAR(48)
 );
 
 -- Создание таблицы лотов
@@ -47,3 +45,24 @@ CREATE TABLE rates (
     user_id  INT NOT NULL,
     lot_id   INT NOT NULL
 );
+
+-- Добавление связей между таблицами
+ALTER TABLE lots
+ADD FOREIGN KEY (category_id)
+REFERENCES categories(id);
+
+ALTER TABLE lots
+ADD FOREIGN KEY (author_id)
+REFERENCES users(id);
+
+ALTER TABLE lots
+ADD FOREIGN KEY (winner_id)
+REFERENCES users(id);
+
+ALTER TABLE rates
+ADD FOREIGN KEY (user_id)
+REFERENCES users(id);
+
+ALTER TABLE rates
+ADD FOREIGN KEY (lot_id)
+REFERENCES lots(id);

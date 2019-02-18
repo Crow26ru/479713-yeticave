@@ -1,25 +1,51 @@
 <?php
-$is_auth = rand(0, 1);
+// Константы SQL запросов
+define(
+    "categories_list",
+    "SELECT name AS categories FROM categories;"
+);
+define(
+    "new_lots_list",
+    "SELECT
+        lots.id,
+        lots.name,
+        categories.name AS category,
+        lots.start_rate AS price,
+        lots.image,
+        lots.date_end AS time
+     FROM lots
+     JOIN categories ON lots.category_id = categories.id
+     ORDER BY date_add DESC;"
+);
 
+$categories = [];
+$is_auth = rand(0, 1);
 $user_name = "Семён"; // укажите здесь ваше имя
 $page_name = "Главная - YetiCave";
-
-// Функция для форматирования суммы
-function show_price($price) {
-    $price = ceil($price);
-    $price = number_format($price, 0, "", " ");
-    return $price . " &#8381;";
-}
 
 require("functions.php");
 require("connect.php");
 
-// $rows_categories в connect.php
-// $rows_lots в connect.php
-$categories = change_to_simple_array($rows_categories);
+// Выполнение запросов к БД
+if (!$con) {
+    print("Ошибка соединения: " . mysqli_connect_error());
+} else {
+    $res_categories = mysqli_query($con, categories_list);
+    $rows_categories = mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
+
+    $res_lots = mysqli_query($con, new_lots_list);
+    $rows_lots = mysqli_fetch_all($res_lots, MYSQLI_ASSOC);
+}
+
+// Преобразование двумерного ассоциативного массива в простой массив категорий
+foreach($rows_categories as $value) {
+    array_push($categories, $value['categories']);
+}
+
 $categories_length = count($categories);
 $products = $rows_lots;
 
+// Подключение шаблонов
 $page_content = include_template("index.php",   [
                                                   "categories"    => $categories,
                                                   "products"      => $products
@@ -32,4 +58,5 @@ $layout_content = include_template("layout.php", [
                                                    "categories" => $categories
                                                  ]);
 
+// Отправка сформированной разметки из шаблонов
 print($layout_content);

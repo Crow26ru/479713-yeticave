@@ -4,10 +4,10 @@
     <ul class="promo__list">
         <!--заполните этот список из массива категорий-->
         <?php
-            foreach($categories as $key => $value):
+            foreach($categories as $value):
         ?>
         <li class="promo__item promo__item--boards">
-            <a class="promo__link" href="pages/all-lots.html"><?=$categories[$key];?></a>
+            <a class="promo__link" href="pages/all-lots.html"><?=$value;?></a>
         </li>
         <?php endforeach; ?>
     </ul>
@@ -27,14 +27,14 @@
             </div>
             <div class="lot__info">
                 <span class="lot__category"><?=strip_tags($item["category"]); ?></span>
-                <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?=strip_tags($item["name"]); ?></a></h3>
+                <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?=$item["id"];?>"><?=strip_tags($item["name"]); ?></a></h3>
                 <div class="lot__state">
                     <div class="lot__rate">
                         <span class="lot__amount">Стартовая цена</span>
                         <span class="lot__cost"><?=show_price($item["price"]); ?><!--Предыдущий способ вывода символа рубля<b class="rub">р</b>--></span>
                     </div>
                     <div class="lot__timer timer">
-                        <?=get_time_of_end_lot();?>
+                        <?=get_time_of_end_lot($item["time"]);?>
                         <!--12:23-->
                     </div>
                 </div>
