@@ -12,7 +12,7 @@ function show_price($price) {
     return $price . " &#8381;";
 }
 
-// Функция шаблонизатор 
+// Функция шаблонизатор
 function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -31,7 +31,7 @@ function include_template($name, $data) {
 }
 
 // Отображение окончания лота в формате ЧЧ:ММ
-function get_time_of_end_lot($time = 'tomorrow midnight') {
+function get_time_of_end_lot($time, $is_hh_mm_ss_format = false) {
     $current_time = time();
     $time_lives_a_lot = strtotime($time);
 
@@ -39,12 +39,22 @@ function get_time_of_end_lot($time = 'tomorrow midnight') {
     $hours = floor($time_lives_a_lot / 3600);
     $minutes = floor($time_lives_a_lot % 3600 / 60);
 
-    if ($hours < 10) {
+    if($hours < 10) {
         $hours = '0' . $hours;
     }
 
-    if ($minutes < 10) {
+    if($minutes < 10) {
         $minutes = '0' . $minutes;
+    }
+
+    if($is_hh_mm_ss_format) {
+        $seconds = $time_lives_a_lot - ($hours * 3600) - ($minutes * 60);
+
+        if($seconds < 10) {
+            $seconds = '0' . $seconds;
+            $time_lives_a_lot = $hours . ':' . $minutes . ':' . $seconds;
+            return $time_lives_a_lot;
+        }
     }
 
     $time_lives_a_lot = $hours . ':' . $minutes;
@@ -55,12 +65,12 @@ function get_time_of_end_lot($time = 'tomorrow midnight') {
 function show_user_frendly_time($time) {
     $current_time = time();
     $time_lives_a_lot = strtotime($time);
-    
+
 
     $time_lives_a_lot = $current_time - $time_lives_a_lot;
     $hours = floor($time_lives_a_lot / 3600);
     $minutes = floor($time_lives_a_lot % 3600 / 60);
-    
+
     if($hours == 0) {
         $time = $minutes . HUMAN_MINUTES;
         return $time;
@@ -68,9 +78,9 @@ function show_user_frendly_time($time) {
         $time = $hours . HUMAN_HOURS;
         return $time;
     }
-    
+
     $date = date('d.m.Y', strtotime($time));
     $time = date('H:i', strtotime($time));
-    
+
     return $date . ' ' . $time;
 }
