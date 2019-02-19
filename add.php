@@ -2,6 +2,29 @@
 // Список разрешенных MIME файлов
 define('PERMIT_MIME_TYPES', ['image/pjpeg', 'image/jpeg', 'image/png']);
 
+// Запрос на получение таблицы категорий
+define(
+    'GET_CATEGORIES_TAB',
+    'SELECT * FROM categories
+     ORDER BY id;'
+);
+
+// Запрос на добавление лота
+define(
+    'ADD_LOT',
+    'INSERT INTO lots (
+        name,
+        description,
+        image,
+        start_rate,
+        date_end,
+        step_value,
+        category_id,
+        author_id
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, 1);'
+);
+
 require_once('functions.php');
 require_once('connect.php');
 
@@ -81,8 +104,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Если изображение валидно, то переместим его из временной директории
         if(!isset($errors['image'])) {
-            move_uploaded_file($tmp_name, 'img/' . $path);
-            $lot['image'] = $path;
+            $path = pathinfo($path);
+
+            // Назначаем изображению уникальное имя
+            $uniq_path = 'img/' . uniqid() . '.' . $path['extension'];
+
+            // Перемещаем изображение из временной директории
+            move_uploaded_file($tmp_name, $uniq_path);
+            $lot['image'] = $uniq_path;
         }
     } else {
         $errors['image'] = 'Вы не загрузили файл';
@@ -90,6 +119,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if(!$errors) {
         $errors = false;
+
+        // Инициируем запросы к БД
+        $rows_categories = mysqli_query($con, GET_CATEGORIES_TAB);
+        $rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
+        
+        foreach($rows_categories as $row) { 
+            if(isset($lot['category']) && isset($row['name'])) {
+                if($lot['category'] === $row['name']) {
+                    $category_id = $row['id'];
+                }
+            }
+        }
+        
+        $stmt = mysqli_prepare($con, ADD_LOT);
+        mysqli_stmt_bind_param($stmt, 'ssssssi',
+                               $lot['lot-name'],
+                               $lot['message'],
+                               $lot['image'],
+                               $lot['lot-rate'],
+                               $lot['lot-date'],
+                               $lot['lot-step'],
+                               $category_id
+                              );
+        $is_add = mysqli_stmt_execute($stmt);
+        if($is_add) {
+            $lot_id = mysqli_insert_id($con);
+            
+            header('Location: lot.php?id=' . $lot_id);
+        } else {
+            $categories_list = include_template('categories.php', ['categories' => $categories]);
+            $fail_content = include_template('404.php', ['categories_list' => $categories_list]);
+            $page = include_template('layout.php', [
+                                            'content'        => $fail_conten,
+                                            'categories'     => $categories,
+                                            'user_name'      => $user_name,
+                                            'is_auth'        => $is_auth,
+                                            'page_name'      => $page_name
+            ]);
+        }
     }
 }
 
