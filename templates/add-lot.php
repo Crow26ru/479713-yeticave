@@ -23,7 +23,11 @@ $date = $_POST['lot-date'] ?? '';
           <select id="category" name="category" value="<?=$category;?>" required>
             <option>Выберите категорию</option>
             <?php foreach ($categories as $value): ?>
+              <?php if($category === $value): ?>
+              <option selected><?=$value;?></option>
+              <?php else: ?>
               <option><?=$value;?></option>
+              <?php endif; ?>
             <?php endforeach; ?>
           </select>
           <?php if(isset($errors['category'])):?>
@@ -33,7 +37,7 @@ $date = $_POST['lot-date'] ?? '';
       </div>
       <div class="form__item form__item--wide <?php if(isset($errors['message'])):?>form__item--invalid<?php endif; ?>">
         <label for="message">Описание</label>
-        <textarea id="message" name="message" value="<?=$message;?>" placeholder="Напишите описание лота" required></textarea>
+        <textarea id="message" name="message" placeholder="Напишите описание лота" required><?=$message;?></textarea>
         <?php if(isset($errors['message'])):?>
         <span class="form__error"><?=$errors['message'];?></span>
         <?php endif; ?>
