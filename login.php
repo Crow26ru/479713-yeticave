@@ -1,8 +1,16 @@
 <?php
-// Запрос списока категорий
+// Запрос списка категорий
 define(
     'CATEGORIES_LIST',
     'SELECT name AS categories FROM categories;'
+);
+
+// Запрос для аутентификации
+define(
+    'USER_AUTH',
+    'SELECT email, password
+     FROM users
+     WHERE email = ? AND password = ?;'
 );
 
 require_once('functions.php');
