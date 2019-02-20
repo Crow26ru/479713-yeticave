@@ -23,7 +23,7 @@ $message = $_POST['message'] ?? '';
     <?php endif; ?>
 
         <label for="email">E-mail*</label>
-        <input id="email" type="text" name="email" value="<?php=$email;?>" placeholder="Введите e-mail" required>
+        <input id="email" type="text" name="email" value="<?=$email;?>" placeholder="Введите e-mail" required>
 
         <?php if(isset($errors['email'])): ?>
         <span class="form__error"><?=$errors['email'];?></span>
@@ -55,7 +55,7 @@ $message = $_POST['message'] ?? '';
     <?php endif; ?>
 
         <label for="name">Имя*</label>
-        <input id="name" type="text" name="name" value="<?php=$name;?>" placeholder="Введите имя" required>
+        <input id="name" type="text" name="name" value="<?=$name;?>" placeholder="Введите имя" required>
 
         <?php if(isset($errors['name'])): ?>
         <span class="form__error"><?=$errors['name'];?></span>
@@ -71,7 +71,7 @@ $message = $_POST['message'] ?? '';
     <?php endif; ?>
 
         <label for="message">Контактные данные*</label>
-        <textarea id="message" name="message" value="<?php=$message;?>" placeholder="Напишите как с вами связаться" required></textarea>
+        <textarea id="message" name="message" value="<?=$message;?>" placeholder="Напишите как с вами связаться" required></textarea>
 
         <?php if(isset($errors['message'])): ?>
         <span class="form__error"><?=$errors['message'];?></span>

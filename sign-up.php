@@ -36,6 +36,16 @@ $is_auth = rand(0, 1);
 $user_name = 'Семён';
 
 $page_name = 'Регистрация - YetiCave';
+$categories = [];
+
+//Получаем список категорий из БД
+$rows_categories = mysqli_query($con, CATEGORIES_LIST);
+$rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
+
+//Разбор двумерного массива категорий из БД в одномерный масссив категорий
+foreach($rows_categories as $category) {
+    array_push($categories, $category['categories']);
+}
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Запишем массив данных, полученных при регистрации нового пользователя
@@ -57,7 +67,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Валидация введенного e-mail
     // Если e-mail пройдет валидацию на формат, проверим будет ли хотя бы одно совпадение e-mail в таблице users
     if(!filter_var($user_data['email'], FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Вы ввели некорректный e-mail.'
+        $errors['email'] = 'Вы ввели некорректный e-mail.';
     } else {
         $stmt = mysqli_prepare($con, EMAIL_CHECK);
         mysqli_stmt_bind_param($stmt, 's', $user_data['email']);
@@ -112,7 +122,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //Если пользователь успешно добавлен, то перенаправим его на главную страницу
         if($is_add) {
-            header('Location: ./')
+            header('Location: ./');
         }
     }
 }
@@ -120,7 +130,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 $categories_list = include_template('categories.php', ['categories' => $categories]);
 $add_user = include_template('sign-up.php', [
                                                'categories_list' => $categories_list,
-                                               'categories'      => $categories,
                                                'errors'          => $errors
                                            ]);
 $page = include_template('layout.php', [
