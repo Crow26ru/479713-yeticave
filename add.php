@@ -101,37 +101,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(!array_search($file_type, PERMIT_MIME_TYPES)) {
             $errors['image'] = 'Загрузите картинку лота в формате PNG или JPEG';
         }
-
-        // Если изображение валидно, то переместим его из временной директории
-        if(!isset($errors['image'])) {
-            $path = pathinfo($path);
-
-            // Назначаем изображению уникальное имя
-            $uniq_path = 'img/' . uniqid() . '.' . $path['extension'];
-
-            // Перемещаем изображение из временной директории
-            move_uploaded_file($tmp_name, $uniq_path);
-            $lot['image'] = $uniq_path;
-        }
     } else {
-        $errors['image'] = 'Вы не загрузили файл';
+        $errors['image'] = 'Вы не загрузили изображение лота';
     }
 
     if(!$errors) {
-        $errors = false;
+        // Переместим из временной директории изображение и переименуем его
+        $tmp_name = $_FILES['image']['tmp_name'];
+        $path = $_FILES['image']['name'];
+        $lot['image'] = remove_image($path, $tmp_name);
 
         // Инициируем запросы к БД
         $rows_categories = mysqli_query($con, GET_CATEGORIES_TAB);
         $rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
-        
-        foreach($rows_categories as $row) { 
+
+        foreach($rows_categories as $row) {
             if(isset($lot['category']) && isset($row['name'])) {
                 if($lot['category'] === $row['name']) {
                     $category_id = $row['id'];
                 }
             }
         }
-        
+
         $stmt = mysqli_prepare($con, ADD_LOT);
         mysqli_stmt_bind_param($stmt, 'ssssssi',
                                $lot['lot-name'],
@@ -145,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $is_add = mysqli_stmt_execute($stmt);
         if($is_add) {
             $lot_id = mysqli_insert_id($con);
-            
+
             header('Location: lot.php?id=' . $lot_id);
         } else {
             $categories_list = include_template('categories.php', ['categories' => $categories]);
