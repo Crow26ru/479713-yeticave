@@ -91,7 +91,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Является ли тип файла разрешенным изображением?
         if(!array_search($file_type, PERMIT_MIME_TYPES)) {
-            $errors['image'] = 'Загрузите картинку лота в формате PNG или JPEG';
+            $errors['image'] = 'Аватарка должна быть в формате PNG или JPEG';
         }
     }
 
