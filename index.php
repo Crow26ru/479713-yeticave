@@ -1,11 +1,11 @@
 <?php
 // Константы SQL запросов
 define(
-    "categories_list",
+    "CATEGORIES_LIST",
     "SELECT name AS categories FROM categories;"
 );
 define(
-    "new_lots_list",
+    "NEW_LOTS_LIST",
     "SELECT
         lots.id,
         lots.name,
@@ -32,10 +32,10 @@ require("connect.php");
 if (!$con) {
     print("Ошибка соединения: " . mysqli_connect_error());
 } else {
-    $res_categories = mysqli_query($con, categories_list);
+    $res_categories = mysqli_query($con, CATEGORIES_LIST);
     $rows_categories = mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
 
-    $res_lots = mysqli_query($con, new_lots_list);
+    $res_lots = mysqli_query($con, NEW_LOTS_LIST);
     $rows_lots = mysqli_fetch_all($res_lots, MYSQLI_ASSOC);
 }
 
