@@ -15,7 +15,9 @@ define(
         lots.date_end AS time
      FROM lots
      JOIN categories ON lots.category_id = categories.id
-     ORDER BY date_add DESC;"
+     WHERE date_end > NOW()
+     ORDER BY date_add DESC
+     LIMIT 9;"
 );
 
 $categories = [];
