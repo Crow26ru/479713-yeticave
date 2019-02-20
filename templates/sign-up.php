@@ -83,7 +83,7 @@ $message = $_POST['message'] ?? '';
     <div class="form__item form__item--file form__item--last form__item--invalid">
 
     <?php else: ?>
-    <div class="form__item">
+    <div class="form__item form__item--file form__item--last">
     <?php endif; ?>
 
         <label>Аватар</label>
