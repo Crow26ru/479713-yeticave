@@ -43,7 +43,11 @@ $date = $_POST['lot-date'] ?? '';
         <?php endif; ?>
       </div>
 
-      <div class="form__item form__item--file"> <!-- form__item--uploaded -->
+      <?php if($image): ?>
+      <div class="form__item form__item--file form__item--uploaded"> <!-- form__item--uploaded -->
+      <?php else: ?>
+      <div class="form__item form__item--file">
+      <?php endif; ?>
 
         <label>Изображение</label>
         <div class="preview">
@@ -54,14 +58,14 @@ $date = $_POST['lot-date'] ?? '';
         </div>
 
         <div class="form__input-file">
-          <input class="visually-hidden" type="file" id="photo2" name="image" value="<?=$image;?>">
+          <input class="visually-hidden" type="file" id="photo2" name="image">
           <label for="photo2">
             <span>+ Добавить</span>
           </label>
+          <?php if(isset($errors['image'])):?>
+          <span class="form__error"><?=$errors['image'];?></span>
+          <?php endif; ?>
         </div>
-        <?php if(isset($errors['lot-date'])):?>
-        <span class="form__error"><?=$errors['image'];?></span>
-        <?php endif; ?>
 
       </div>
 
