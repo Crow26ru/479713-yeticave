@@ -80,11 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Проверяем дату
-    $date_regexp = '/\d{4}-\d{2}-\d{2}/';
+    $date_regexp = '/\d{2}.\d{2}.\d{4}/';
     if (!preg_match($date_regexp, $lot['lot-date'])) {
-        $errors['lot-date'] = 'Введите дату окончания лота в формате ДД-ММ-ГГГГ';
+        $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
     } else {
-        if(!strtotime($lot['lot-date'])) {
+        $date_arr = explode('.', $lot['lot-date']);
+        if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
             $errors['lot-date'] = 'Указана неверная дата';
         }
     }
