@@ -68,21 +68,21 @@ $date = $_POST['lot-date'] ?? '';
       <div class="form__container-three">
         <div class="form__item form__item--small <?php if(isset($errors['lot-rate'])):?>form__item--invalid<?php endif; ?>">
           <label for="lot-rate">Начальная цена</label>
-          <input id="lot-rate" type="number" name="lot-rate" value="<?=$start_cost;?>" placeholder="0" required>
+          <input id="lot-rate" type="text" name="lot-rate" value="<?=$start_cost;?>" placeholder="0" required>
           <?php if(isset($errors['lot-rate'])):?>
           <span class="form__error"><?=$errors['lot-rate'];?></span>
           <?php endif; ?>
         </div>
         <div class="form__item form__item--small <?php if(isset($errors['lot-step'])):?>form__item--invalid<?php endif; ?>">
           <label for="lot-step">Шаг ставки</label>
-          <input id="lot-step" type="number" name="lot-step" value="<?=$step;?>" placeholder="0" required>
+          <input id="lot-step" type="text" name="lot-step" value="<?=$step;?>" placeholder="0" required>
           <?php if(isset($errors['lot-step'])):?>
           <span class="form__error"><?=$errors['lot-step'];?></span>
           <?php endif; ?>
         </div>
         <div class="form__item <?php if(isset($errors['lot-date'])):?>form__item--invalid<?php endif; ?>">
           <label for="lot-date">Дата окончания торгов</label>
-          <input class="form__input-date" id="lot-date" type="date" name="lot-date" value="<?=$date;?>" required>
+          <input class="form__input-date" id="lot-date" type="text" name="lot-date" value="<?=$date;?>" required>
           <?php if(isset($errors['lot-date'])):?>
           <span class="form__error"><?=$errors['lot-date'];?></span>
           <?php endif; ?>
