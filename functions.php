@@ -87,3 +87,17 @@ function show_user_frendly_time($time) {
 
     return $date . ' ' . $time;
 }
+
+function remove_image($path, $tmp_name) {
+    // Разберем путь файла на составляющие
+    $path = pathinfo($path);
+
+    // Назначаем изображению уникальное имя
+    $uniq_path = 'img/' . uniqid() . '.' . $path['extension'];
+
+    // Перемещаем изображение из временной директории
+    move_uploaded_file($tmp_name, $uniq_path);
+
+    // Вернем название нового файла, чтобы верно прописать в БД путь к изображению
+    return $uniq_path;
+}

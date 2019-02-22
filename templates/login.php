@@ -1,5 +1,5 @@
 <?=$categories_list;?>
-<form class="form container" action="https://echo.htmlacademy.ru" method="post"> <!-- form--invalid -->
+<form class="form container" action="login.php" method="post"> <!-- form--invalid -->
     <h2>Вход</h2>
     <div class="form__item"> <!-- form__item--invalid -->
         <label for="email">E-mail*</label>
