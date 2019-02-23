@@ -69,6 +69,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(!filter_var($user_data['email'], FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = 'Вы ввели некорректный e-mail.';
     } else {
+        // Экранируем из введенного email спецсимволы
+        $user_data['email'] = mysqli_real_escape_string($con, $user_data['email']);
+
         $stmt = mysqli_prepare($con, EMAIL_CHECK);
         mysqli_stmt_bind_param($stmt, 's', $user_data['email']);
         mysqli_stmt_execute($stmt);
@@ -97,21 +100,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     // а если есть аватарка, то переместим её из временной папки
     if(!$errors) {
         // Надо будет для начала захешировать пароль пользователя
-        // К этой процедуре вернемся позже
-
-        // Если была получена аватарка, то нужно её переместить и переименовать
-        if($_FILES['image']['name']) {
-            $tmp_name = $_FILES['image']['tmp_name'];
-            $path = $_FILES['image']['name'];
-            $user_data['image'] = remove_image($path, $tmp_name);
-        } else {
-            $user_data['image'] = '';
-        }
+        $pass = password_hash($user_data['password'], PASSWORD_DEFAULT);
 
         // Выполняем запрос на добавление пользователя в таблицу users
         $stmt = mysqli_prepare($con, ADD_USER);
         mysqli_stmt_bind_param($stmt, 'sssss', $user_data['email'],
-                                               $user_data['password'],
+                                               $pass,
                                                $user_data['name'],
                                                $user_data['message'],
                                                $user_data['image']
@@ -120,6 +114,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //Если пользователь успешно добавлен, то перенаправим его на главную страницу
         if($is_add) {
+            // Если была получена аватарка, то нужно её переместить и переименовать
+            if($_FILES['image']['name']) {
+                $tmp_name = $_FILES['image']['tmp_name'];
+                $path = $_FILES['image']['name'];
+                   $user_data['image'] = remove_image($path, $tmp_name);
+            } else {
+                $user_data['image'] = '';
+            }
+            
+            // Сразу залогинем пользователя после регистрации
+            session_start();
+            $_SESSION['user'] = $user_data['name'];
             header('Location: ./');
         }
     }
