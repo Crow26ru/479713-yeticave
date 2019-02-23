@@ -71,7 +71,7 @@ $message = $_POST['message'] ?? '';
     <?php endif; ?>
 
         <label for="message">Контактные данные*</label>
-        <textarea id="message" name="message" value="<?=$message;?>" placeholder="Напишите как с вами связаться" required></textarea>
+        <textarea id="message" name="message" placeholder="Напишите как с вами связаться" required><?=$message;?></textarea>
 
         <?php if(isset($errors['message'])): ?>
         <span class="form__error"><?=$errors['message'];?></span>
