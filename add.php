@@ -93,6 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date_arr = explode('.', $lot['lot-date']);
         if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
             $errors['lot-date'] = 'Указана неверная дата';
+        } else if(strtotime($lot['lot-date']) <= (time())) {
+            $errors['lot-date'] = 'Дата завершения торгов должна быть больше текущей даты, хотя бы на один день.';
         }
     }
 
