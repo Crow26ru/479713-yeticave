@@ -32,8 +32,8 @@ require_once('connect.php');
 $errors = false;
 
 // is_auth потом надо будет как-то изменить, а user_name отображать после добавления пользователя
-$is_auth = rand(0, 1);
-$user_name = 'Семён';
+$is_auth = 0;
+$user_name = '';
 
 $page_name = 'Регистрация - YetiCave';
 $categories = [];

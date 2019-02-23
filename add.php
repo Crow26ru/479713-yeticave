@@ -29,10 +29,16 @@ require_once('functions.php');
 require_once('connect.php');
 
 $categories = [];
-$is_auth = rand(0, 1);
+$is_auth = 0;
 $is_good = false;
-$user_name = 'Семён';
 $page_name = 'Добавление лота - YetiCave';
+
+if(isset($_SESSION['user'])) {
+    $user_name = $_SESSION['user'];
+    $is_auth = 1;
+} else {
+    $user_name = '';
+}
 
 // Запрос списока категорий
 define(
