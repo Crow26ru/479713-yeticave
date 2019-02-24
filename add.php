@@ -29,10 +29,16 @@ require_once('functions.php');
 require_once('connect.php');
 
 $categories = [];
-$is_auth = rand(0, 1);
+$is_auth = 0;
 $is_good = false;
-$user_name = 'Семён';
 $page_name = 'Добавление лота - YetiCave';
+
+if(isset($_SESSION['user'])) {
+    $user_name = $_SESSION['user'];
+    $is_auth = 1;
+} else {
+    $user_name = '';
+}
 
 // Запрос списока категорий
 define(
@@ -80,14 +86,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Проверяем дату
-    $date_regexp = '/\d{2}.\d{2}.\d{4}/';
-    if (!preg_match($date_regexp, $lot['lot-date'])) {
-        $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
-    } else {
-        $date_arr = explode('.', $lot['lot-date']);
-        if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
-            $errors['lot-date'] = 'Указана неверная дата';
-        }
+    $date_arr = explode('.', $lot['lot-date']);
+    if(count($date_arr) !== 3) {
+        $errors['lot-date'] = 'Дата введена неверно';
+    } else if(strlen($date_arr[0]) !== 2 || strlen($date_arr[1]) !== 2 || strlen($date_arr[2]) !== 4) {
+        $errors['lot-date'] = 'Дата введена неверно';
+    } else if(!is_numeric($date_arr[0]) || !is_numeric($date_arr[1]) || !is_numeric($date_arr[2])) {
+        $errors['lot-date'] = 'Дата введена неверно';
+    } else if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
+        $errors['lot-date'] = 'Дата введена неверно';
+    } else if(strtotime($lot['lot-date']) <= (time())) {
+        $errors['lot-date'] = 'Дата введена неверно';
     }
 
     // Проверяем был ли загружен файл

@@ -1,4 +1,5 @@
 <?php
+
 // Константы SQL запросов
 define(
     "CATEGORIES_LIST",
@@ -20,14 +21,19 @@ define(
      LIMIT 9;"
 );
 
+$is_auth = 0;
 $categories = [];
-$is_auth = rand(0, 1);
-$user_name = "Семён"; // укажите здесь ваше имя
 $page_name = "Главная - YetiCave";
 
 require("functions.php");
 require("connect.php");
 
+if(isset($_SESSION['user'])) {
+    $user_name = $_SESSION['user'];
+    $is_auth = 1;
+} else {
+    $user_name = '';
+}
 // Выполнение запросов к БД
 if (!$con) {
     print("Ошибка соединения: " . mysqli_connect_error());

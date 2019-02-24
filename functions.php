@@ -4,6 +4,7 @@ define('HUMAN_MINUTES', ' минут назад');
 define('HUMAN_HOURS', ' часов назад');
 
 date_default_timezone_set('Europe/Moscow');
+session_start();
 
 // Функция для форматирования суммы
 function show_price($price) {
