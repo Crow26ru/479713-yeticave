@@ -91,10 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
     } else if(strlen($date_arr[0]) !== 2 || strlen($date_arr[1]) !== 2 || strlen($date_arr[2]) !== 4) {
         $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
-    } else if(!is_numeric($date_arr[0]) || !is_numeric($date_arr[1]) || !is_numeric($date_arr[3])) {
+    } else if(!is_numeric($date_arr[0]) || !is_numeric($date_arr[1]) || !is_numeric($date_arr[2])) {
         $errors['lot-date'] = 'Указана не дата';
     } else if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
         $errors['lot-date'] = 'Указана неверная дата';
+    } else if(strtotime($lot['lot-date']) <= (time())) {
+        $errors['lot-date'] = 'Дата завершения торгов должна быть больше текущей даты, хотя бы на один день.';
     }
 
     // Проверяем был ли загружен файл
