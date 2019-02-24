@@ -9,6 +9,7 @@
           <p class="lot-item__category">Категория: <span><?=$lot['category'];?></span></p>
           <p class="lot-item__description"><?=strip_tags($lot['description']);?></p>
         </div>
+        <?php if($is_auth === 1): ?>
         <div class="lot-item__right">
           <div class="lot-item__state">
             <div class="lot-item__timer timer">
@@ -34,5 +35,6 @@
           </div>
           <?=$rates;?>
         </div>
+        <?php endif; ?>
       </div>
     </section>

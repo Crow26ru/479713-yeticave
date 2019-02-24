@@ -50,13 +50,19 @@ define(
 );
 
 $categories = [];
-$is_auth = rand(0, 1);
 $is_good = false;
-$user_name = 'Семён';
 $page_name = 'Аукцион - YetiCave';
 
 require_once('functions.php');
 require_once('connect.php');
+
+if(isset($_SESSION['user'])) {
+    $user_name = $_SESSION['user'];
+    $is_auth = 1;
+} else {
+    $user_name = '';
+    $is_auth = 0;
+}
 
 $rows_categories = mysqli_query($con, CATEGORIES_LIST);
 $rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
@@ -110,6 +116,7 @@ if(isset($_GET['id'])) {
             
             $main_content = include_template('lot.php', [
                                                              'categories_list' => $categories_content,
+                                                             'is_auth'         => $is_auth,
                                                              'lot'             => $lot,
                                                              'rates'           => $rates_content,
                                                              'total_rate'      => $rates_total
