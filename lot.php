@@ -97,8 +97,10 @@ if(isset($_GET['id'])) {
                 $lot = $lot[0];
             }
             
-            if (isset($rates_total[0]['total'])) {
-                $rates_total = intval($rates_total[0]['total'], 10);
+            if (empty($rates_total[0]['total'])) {
+                $rates_total = $lot['start_rate'];
+            } else {
+                $rates_total = $lot['start_rate'] + $rates_total[0]['total'];
             }
         
             // Подключаем шаблоны

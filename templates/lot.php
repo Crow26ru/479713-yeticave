@@ -17,14 +17,7 @@
             <div class="lot-item__cost-state">
               <div class="lot-item__rate">
                 <span class="lot-item__amount">Текущая цена</span>
-                <?php
-                    if($total_rate && !is_array($total_rate)) {
-                        $sum = $lot['start_rate'] + $total_rate;
-                    } else {
-                        $sum = $lot['start_rate'];
-                    }
-                ?>
-                <span class="lot-item__cost"><?=show_price($sum);?></span>
+                <span class="lot-item__cost"><?=show_price($total_rate);?></span>
               </div>
               <div class="lot-item__min-cost">
                 Мин. ставка <span><?=show_price($lot['step']);?></span>
