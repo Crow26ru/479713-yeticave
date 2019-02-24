@@ -86,10 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Проверяем дату
-    if(!date_create_from_format('d.m.Y', $lot['lot-date'])) {
-        $errors['lot-date'] = 'Введите верную дату окончания лота в формате ДД.ММ.ГГГГ';
-    } else if(strtotime($lot['lot-date']) <= time()) {
-        $errors['lot-date'] = 'Дата завершения торгов должна быть больше текущей даты, хотя бы на один день.';
+    $date_regexp = '/\d{2}.\d{2}.\d{4}/';
+    if (!preg_match($date_regexp, $lot['lot-date']) && strlen($lot['lot-date']) !== 10) {
+        $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
+    } else {
+        $date_arr = explode('.', $lot['lot-date']);
+        if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
+            $errors['lot-date'] = 'Указана неверная дата';
+        } else if(strtotime($lot['lot-date']) <= (time())) {
+            $errors['lot-date'] = 'Дата завершения торгов должна быть больше текущей даты, хотя бы на один день.';
+        }
     }
 
     // Проверяем был ли загружен файл
