@@ -128,9 +128,16 @@ if(isset($_GET['id'])) {
 
 if(!$is_good) {
     http_response_code(404);
+    $error_title = 'Ошибка 404: Страница не найдена';
+    $error_message = 'Данной страницы не существует на сайте.';
+
     $categories_content = include_template('categories.php', ['categories'      => $categories]);
 
-    $fail_content = include_template('404.php',              ['categories_list' => $categories_content]);
+    $fail_content = include_template('404.php',              [
+                                                              'categories_list' => $categories_content,
+                                                              'title'           => $error_title,
+                                                              'message'         => $error_message
+    ]);
 
     $all_content = include_template('layout.php',            [
                                                               'content'         => $fail_content,

@@ -148,8 +148,16 @@ if(isset($_SESSION['user'])) {
 
                 header('Location: lot.php?id=' . $lot_id);
             } else {
-                $categories_list = include_template('categories.php', ['categories' =>     $categories]);
-                $fail_content = include_template('404.php', ['categories_list'      =>     $categories_list]);
+                http_response_code(500);
+                $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+                $error_message = 'Попробуйте добавить лот позже.';
+
+                $categories_list = include_template('categories.php', ['categories'  =>     $categories]);
+                $fail_content = include_template('404.php', [
+                                                              'categories_list'      =>     $categories_list,
+                                                              'title'                =>     $error_title,
+                                                              'message'              =>     $error_message
+                ]);
                 $page = include_template('layout.php', [
                                                 'content'        => $fail_conten,
                                                 'categories'     => $categories,
@@ -179,8 +187,15 @@ if(isset($_SESSION['user'])) {
     print($page);
 } else {
     http_response_code(403);
+    $error_title = 'Ошибка 403: Доступ закрыт';
+    $error_message = 'Эта страница доступна только для зарегистрированных пользователей.';
+    
     $categories_list = include_template('categories.php', ['categories' =>     $categories]);
-    $fail_content = include_template('404.php', ['categories_list'      =>     $categories_list]);
+    $fail_content = include_template('404.php', [
+                                                    'categories_list'   =>     $categories_list,
+                                                    'title'             =>     $error_title,
+                                                    'message'           =>     $error_message
+    ]);
     $page = include_template('layout.php', [
                                                 'content'               => $fail_content,
                                                 'categories'            => $categories,
