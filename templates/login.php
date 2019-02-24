@@ -14,7 +14,7 @@ $email = $_POST['email'] ?? '';
     <div class="form__item">
     <?php endif; ?>   
         <label for="email">E-mail*</label>
-        <input id="email" type="text" name="email" placeholder="Введите e-mail" required>
+        <input id="email" type="text" name="email" placeholder="Введите e-mail" value="<?=$email;?>" required>
         <?php if(isset($errors['email'])): ?>
         <span class="form__error"><?=$errors['email'];?></span>
         <?php endif; ?>
