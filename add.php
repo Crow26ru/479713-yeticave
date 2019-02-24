@@ -86,16 +86,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Проверяем дату
-    $date_regexp = '/\d{2}.\d{2}.\d{4}/';
-    if (!preg_match($date_regexp, $lot['lot-date']) && strlen($lot['lot-date']) !== 10) {
+    $date_arr = explode('.', $lot['lot-date']);
+    if(count($date_arr) !== 3) {
         $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
-    } else {
-        $date_arr = explode('.', $lot['lot-date']);
-        if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
-            $errors['lot-date'] = 'Указана неверная дата';
-        } else if(strtotime($lot['lot-date']) <= (time())) {
-            $errors['lot-date'] = 'Дата завершения торгов должна быть больше текущей даты, хотя бы на один день.';
-        }
+    } else if(strlen($date_arr[0]) !== 2 || strlen($date_arr[1]) !== 2 || strlen($date_arr[2]) !== 4) {
+        $errors['lot-date'] = 'Введите дату окончания лота в формате ДД.ММ.ГГГГ';
+    } else if(!is_numeric($date_arr[0]) || !is_numeric($date_arr[1]) || !is_numeric($date_arr[3])) {
+        $errors['lot-date'] = 'Указана не дата';
+    } else if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
+        $errors['lot-date'] = 'Указана неверная дата';
     }
 
     // Проверяем был ли загружен файл
