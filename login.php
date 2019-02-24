@@ -39,11 +39,6 @@ foreach($rows_categories as $value) {
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = $_POST;
-    /*
-      Ключи:
-      E-mail: ['email'];
-      Пароль: ['password']
-    */
 
     // Массив сообщений об ошибках
     $errors = [];
