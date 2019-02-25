@@ -21,15 +21,22 @@
                 <span class="lot-item__cost"><?=show_price($total_rate);?></span>
               </div>
               <div class="lot-item__min-cost">
-                Мин. ставка <span><?=show_price($lot['step']);?></span>
+                Мин. ставка <span><?=show_price($lot['min_cost']);?></span>
               </div>
             </div>
             <?php if($is_auth === 1 && !$is_end): ?>
-            <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
+            <form class="lot-item__form" action="lot.php" method="post">
+              <?php if($error): ?>
               <p class="lot-item__form-item form__item form__item--invalid">
+              <?php else: ?>
+              <p class="lot-item__form-item form__item">
+              <?php endif; ?>
                 <label for="cost">Ваша ставка</label>
                 <input id="cost" type="text" name="cost" placeholder="12 000">
-                <span class="form__error">Введите наименование лота</span>
+                <input type="hidden" name="id" value="<?=$lot_id;?>">
+                <?php if($error): ?>
+                <span class="form__error"><?=$error;?></span>
+                <?php endif; ?>
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
