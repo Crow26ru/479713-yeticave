@@ -49,14 +49,26 @@ define(
     WHERE rates.lot_id = ?;'
 );
 
+// Запрос даты окончания лота
+define(
+    'DATE_END',
+    'SELECT date_end FROM lots WHERE id = ?;'
+);
+
 $categories = [];
-$is_auth = rand(0, 1);
 $is_good = false;
-$user_name = 'Семён';
 $page_name = 'Аукцион - YetiCave';
 
 require_once('functions.php');
 require_once('connect.php');
+
+if(isset($_SESSION['user'])) {
+    $user_name = $_SESSION['user'];
+    $is_auth = 1;
+} else {
+    $user_name = '';
+    $is_auth = 0;
+}
 
 $rows_categories = mysqli_query($con, CATEGORIES_LIST);
 $rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
@@ -85,11 +97,18 @@ if(isset($_GET['id'])) {
     mysqli_stmt_bind_param($stmt, 'i', $lot_id);
     mysqli_stmt_execute($stmt);
     $rates_total = mysqli_stmt_get_result($stmt);
+    
+    $stmt = mysqli_prepare($con, DATE_END);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $date_end = mysqli_stmt_get_result($stmt);
+    
 
     if ($lot) {
         $lot = mysqli_fetch_all($lot, MYSQLI_ASSOC);
         $rates_history = mysqli_fetch_all($rates_history, MYSQLI_ASSOC);
         $rates_total = mysqli_fetch_all($rates_total, MYSQLI_ASSOC);
+        $date_end = mysqli_fetch_all($date_end, MYSQLI_ASSOC);
         
         if ($lot) {    
             // Преобразование двумерного ассоциативного массива из одного элемента в ассоциативный массив лота
@@ -97,10 +116,18 @@ if(isset($_GET['id'])) {
                 $lot = $lot[0];
             }
             
-            if (isset($rates_total[0]['total'])) {
-                $rates_total = intval($rates_total[0]['total'], 10);
+            if (empty($rates_total[0]['total'])) {
+                $rates_total = $lot['start_rate'];
+            } else {
+                $rates_total = $lot['start_rate'] + $rates_total[0]['total'];
             }
-        
+
+            // Переводим полученную дату окончания торгов по лоту в UNIX time
+            $date_end = strtotime($date_end[0]['date_end']);
+            
+            // Установка флага завершения торгов по лоту
+            $is_end = ($date_end <= time()) ? true : false;
+
             // Подключаем шаблоны
             $categories_content = include_template('categories.php', ['categories'  => $categories]);
             
@@ -108,9 +135,11 @@ if(isset($_GET['id'])) {
             
             $main_content = include_template('lot.php', [
                                                              'categories_list' => $categories_content,
+                                                             'is_auth'         => $is_auth,
                                                              'lot'             => $lot,
                                                              'rates'           => $rates_content,
-                                                             'total_rate'      => $rates_total
+                                                             'total_rate'      => $rates_total,
+                                                             'is_end'          => $is_end
                                                         ]);
             $all_content = include_template('layout.php', [
                                                               'content'        => $main_content,
@@ -128,9 +157,16 @@ if(isset($_GET['id'])) {
 
 if(!$is_good) {
     http_response_code(404);
+    $error_title = 'Ошибка 404: Страница не найдена';
+    $error_message = 'Данной страницы не существует на сайте.';
+
     $categories_content = include_template('categories.php', ['categories'      => $categories]);
 
-    $fail_content = include_template('404.php',              ['categories_list' => $categories_content]);
+    $fail_content = include_template('404.php',              [
+                                                              'categories_list' => $categories_content,
+                                                              'title'           => $error_title,
+                                                              'message'         => $error_message
+    ]);
 
     $all_content = include_template('layout.php',            [
                                                               'content'         => $fail_content,

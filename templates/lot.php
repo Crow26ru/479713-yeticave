@@ -10,6 +10,7 @@
           <p class="lot-item__description"><?=strip_tags($lot['description']);?></p>
         </div>
         <div class="lot-item__right">
+          <?php if(!$is_end): ?>
           <div class="lot-item__state">
             <div class="lot-item__timer timer">
               <?=get_time_of_end_lot($lot['time']);?>
@@ -17,19 +18,13 @@
             <div class="lot-item__cost-state">
               <div class="lot-item__rate">
                 <span class="lot-item__amount">Текущая цена</span>
-                <?php
-                    if($total_rate && !is_array($total_rate)) {
-                        $sum = $lot['start_rate'] + $total_rate;
-                    } else {
-                        $sum = $lot['start_rate'];
-                    }
-                ?>
-                <span class="lot-item__cost"><?=show_price($sum);?></span>
+                <span class="lot-item__cost"><?=show_price($total_rate);?></span>
               </div>
               <div class="lot-item__min-cost">
                 Мин. ставка <span><?=show_price($lot['step']);?></span>
               </div>
             </div>
+            <?php if($is_auth === 1 && !$is_end): ?>
             <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
               <p class="lot-item__form-item form__item form__item--invalid">
                 <label for="cost">Ваша ставка</label>
@@ -38,7 +33,9 @@
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
+            <?php endif; ?>
           </div>
+          <?php endif; ?>
           <?=$rates;?>
         </div>
       </div>
