@@ -126,6 +126,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Сразу залогинем пользователя после регистрации
             session_start();
             $_SESSION['user'] = $user_data['name'];
+            $_SESSION['email'] = $user_data['email'];
             header('Location: ./');
         }
     }

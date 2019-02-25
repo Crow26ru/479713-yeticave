@@ -81,6 +81,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors['password'] = 'Вы ввели неверный пароль';
             } else {
                 $_SESSION['user'] = $name;
+                $_SESSION['email'] = $login['email'];
                 header('Location: ./');
             }
         }
