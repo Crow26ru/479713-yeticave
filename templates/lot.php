@@ -9,7 +9,6 @@
           <p class="lot-item__category">Категория: <span><?=$lot['category'];?></span></p>
           <p class="lot-item__description"><?=strip_tags($lot['description']);?></p>
         </div>
-        <?php if($is_auth === 1): ?>
         <div class="lot-item__right">
           <div class="lot-item__state">
             <div class="lot-item__timer timer">
@@ -24,6 +23,7 @@
                 Мин. ставка <span><?=show_price($lot['step']);?></span>
               </div>
             </div>
+            <?php if($is_auth === 1): ?>
             <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
               <p class="lot-item__form-item form__item form__item--invalid">
                 <label for="cost">Ваша ставка</label>
@@ -32,9 +32,9 @@
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
+            <?php endif; ?>
           </div>
           <?=$rates;?>
         </div>
-        <?php endif; ?>
       </div>
     </section>
