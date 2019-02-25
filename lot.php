@@ -40,7 +40,7 @@ define(
     ORDER BY rates.date_add DESC;'
 );
 
-// Запрос суммы ставок
+// Запрос последней ставки она же максимальная ставка
 define(
     'LAST_RATE',
     'SELECT max(rates.rate) AS max_rate
