@@ -10,6 +10,7 @@
           <p class="lot-item__description"><?=strip_tags($lot['description']);?></p>
         </div>
         <div class="lot-item__right">
+          <?php if(!$is_end): ?>
           <div class="lot-item__state">
             <div class="lot-item__timer timer">
               <?=get_time_of_end_lot($lot['time']);?>
@@ -23,7 +24,7 @@
                 Мин. ставка <span><?=show_price($lot['step']);?></span>
               </div>
             </div>
-            <?php if($is_auth === 1): ?>
+            <?php if($is_auth === 1 && !$is_end): ?>
             <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
               <p class="lot-item__form-item form__item form__item--invalid">
                 <label for="cost">Ваша ставка</label>
@@ -34,6 +35,7 @@
             </form>
             <?php endif; ?>
           </div>
+          <?php endif; ?>
           <?=$rates;?>
         </div>
       </div>

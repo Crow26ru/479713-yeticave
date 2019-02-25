@@ -49,6 +49,12 @@ define(
     WHERE rates.lot_id = ?;'
 );
 
+// Запрос даты окончания лота
+define(
+    'DATE_END',
+    'SELECT date_end FROM lots WHERE id = ?;'
+);
+
 $categories = [];
 $is_good = false;
 $page_name = 'Аукцион - YetiCave';
@@ -91,11 +97,18 @@ if(isset($_GET['id'])) {
     mysqli_stmt_bind_param($stmt, 'i', $lot_id);
     mysqli_stmt_execute($stmt);
     $rates_total = mysqli_stmt_get_result($stmt);
+    
+    $stmt = mysqli_prepare($con, DATE_END);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $date_end = mysqli_stmt_get_result($stmt);
+    
 
     if ($lot) {
         $lot = mysqli_fetch_all($lot, MYSQLI_ASSOC);
         $rates_history = mysqli_fetch_all($rates_history, MYSQLI_ASSOC);
         $rates_total = mysqli_fetch_all($rates_total, MYSQLI_ASSOC);
+        $date_end = mysqli_fetch_all($date_end, MYSQLI_ASSOC);
         
         if ($lot) {    
             // Преобразование двумерного ассоциативного массива из одного элемента в ассоциативный массив лота
@@ -108,7 +121,13 @@ if(isset($_GET['id'])) {
             } else {
                 $rates_total = $lot['start_rate'] + $rates_total[0]['total'];
             }
-        
+
+            // Переводим полученную дату окончания торгов по лоту в UNIX time
+            $date_end = strtotime($date_end[0]['date_end']);
+            
+            // Установка флага завершения торгов по лоту
+            $is_end = ($date_end <= time()) ? true : false;
+
             // Подключаем шаблоны
             $categories_content = include_template('categories.php', ['categories'  => $categories]);
             
@@ -119,7 +138,8 @@ if(isset($_GET['id'])) {
                                                              'is_auth'         => $is_auth,
                                                              'lot'             => $lot,
                                                              'rates'           => $rates_content,
-                                                             'total_rate'      => $rates_total
+                                                             'total_rate'      => $rates_total,
+                                                             'is_end'          => $is_end
                                                         ]);
             $all_content = include_template('layout.php', [
                                                               'content'        => $main_content,
