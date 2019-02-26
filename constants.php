@@ -141,3 +141,38 @@ define(
     )
     VALUES (?, ?, ?, ?, ?);'
 );
+
+// Запрос на получение последних лотов (не более 9) без смещения
+define(
+    'NEW_LOTS_CATEGORY_LIST',
+    'SELECT
+        lots.id,
+        lots.name,
+        categories.name AS category,
+        lots.start_rate AS price,
+        lots.image,
+        lots.date_end AS time
+     FROM lots
+     JOIN categories ON lots.category_id = categories.id
+     WHERE date_end > NOW() AND category_id = ?
+     ORDER BY date_add DESC
+     LIMIT 9;'
+);
+
+// Запрос на получение последних лотов (не более 9) со смещением
+define(
+    'NEW_LOTS_CATEGORY_LIST_OFSET',
+    'SELECT
+        lots.id,
+        lots.name,
+        categories.name AS category,
+        lots.start_rate AS price,
+        lots.image,
+        lots.date_end AS time
+     FROM lots
+     JOIN categories ON lots.category_id = categories.id
+     WHERE date_end > NOW() AND category_id = ?
+     ORDER BY date_add DESC
+     LIMIT 9 OFSET ?;'
+);
+
