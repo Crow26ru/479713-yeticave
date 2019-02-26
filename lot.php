@@ -157,17 +157,18 @@ if(isset($_POST['id'])) {
         $last_rate = mysqli_fetch_all($last_rate, MYSQLI_ASSOC);
 
         // Если до этого ставок не было, то надо записать начальную ставку
-        if(!$last_rate) {
+        if(!isset($last_rate[0]['rate'])) {
             $stmt = mysqli_prepare($con, LOT);
             mysqli_stmt_bind_param($stmt, 's', $lot_id);
             mysqli_stmt_execute($stmt);
             $last_rate = mysqli_stmt_get_result($stmt);
             $last_rate = mysqli_fetch_all($last_rate, MYSQLI_ASSOC);
             $last_rate = $last_rate[0]['start_rate'];
+        } else {
+            $last_rate = $last_rate[0]['rate'];
         }
 
         $step = $step[0]['step_value'];
-        $last_rate = $last_rate[0]['rate'];
 
         // Указываем минимальную ставку
         $min_rate = intval($last_rate) + intval($step);
