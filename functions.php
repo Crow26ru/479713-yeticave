@@ -9,8 +9,8 @@ session_start();
 // Функция для форматирования суммы
 function show_price($price) {
     $price = ceil($price);
-    $price = number_format($price, 0, "", " ");
-    return $price . " &#8381;";
+    $price = number_format($price, 0, '', ' ');
+    return $price . ' &#8381;';
 }
 
 // Функция шаблонизатор

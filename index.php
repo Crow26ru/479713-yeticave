@@ -1,32 +1,11 @@
 <?php
-
-// Константы SQL запросов
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
-);
-define(
-    'NEW_LOTS_LIST',
-    'SELECT
-        lots.id,
-        lots.name,
-        categories.name AS category,
-        lots.start_rate AS price,
-        lots.image,
-        lots.date_end AS time
-     FROM lots
-     JOIN categories ON lots.category_id = categories.id
-     WHERE date_end > NOW()
-     ORDER BY date_add DESC
-     LIMIT 9;'
-);
-
 $is_auth = 0;
 $categories = [];
 $page_name = 'Главная - YetiCave';
 
-require('functions.php');
-require('connect.php');
+require_once('constants.php');
+require_once('functions.php');
+require_once('connect.php');
 
 if(isset($_SESSION['user'])) {
     $user_name = $_SESSION['user'];

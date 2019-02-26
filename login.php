@@ -1,24 +1,5 @@
 <?php
-// Запрос списка категорий
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
-);
-
-// Запрос e-mail из таблицы users
-define(
-    'EMAIL_CHECK',
-    'SELECT email FROM users WHERE email = ?;'
-);
-
-// Запрос для аутентификации
-define(
-    'USER_AUTH',
-    'SELECT email, password, name
-     FROM users
-     WHERE email = ?;'
-);
-
+require_once('constants.php');
 require_once('functions.php');
 require_once('connect.php');
 

@@ -1,30 +1,5 @@
 <?php
-// Список разрешенных MIME файлов
-define('PERMIT_MIME_TYPES', ['image/pjpeg', 'image/jpeg', 'image/png']);
-
-// Запрос на получение таблицы категорий
-define(
-    'GET_CATEGORIES_TAB',
-    'SELECT * FROM categories
-     ORDER BY id;'
-);
-
-// Запрос на добавление лота
-define(
-    'ADD_LOT',
-    'INSERT INTO lots (
-        name,
-        description,
-        image,
-        start_rate,
-        date_end,
-        step_value,
-        category_id,
-        author_id
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, 1);'
-);
-
+require_once('constants.php');
 require_once('functions.php');
 require_once('connect.php');
 
@@ -39,12 +14,6 @@ if(isset($_SESSION['user'])) {
 } else {
     $user_name = '';
 }
-
-// Запрос списока категорий
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
-);
 
 //Получаем список категорий из БД
 $rows_categories = mysqli_query($con, CATEGORIES_LIST);
@@ -189,7 +158,7 @@ if(isset($_SESSION['user'])) {
     http_response_code(403);
     $error_title = 'Ошибка 403: Доступ закрыт';
     $error_message = 'Эта страница доступна только для зарегистрированных пользователей.';
-    
+
     $categories_list = include_template('categories.php', ['categories' =>     $categories]);
     $fail_content = include_template('404.php', [
                                                     'categories_list'   =>     $categories_list,
