@@ -1,12 +1,14 @@
 <?php
-//index.php
+// Запрос на получение списка категорий
 define(
-    "CATEGORIES_LIST",
-    "SELECT name AS categories FROM categories;"
+    'CATEGORIES_LIST',
+    'SELECT name AS categories FROM categories;'
 );
+
+// Запрос на получение последних лотов (не более 9)
 define(
-    "NEW_LOTS_LIST",
-    "SELECT
+    'NEW_LOTS_LIST',
+    'SELECT
         lots.id,
         lots.name,
         categories.name AS category,
@@ -17,10 +19,9 @@ define(
      JOIN categories ON lots.category_id = categories.id
      WHERE date_end > NOW()
      ORDER BY date_add DESC
-     LIMIT 9;"
+     LIMIT 9;'
 );
 
-//add.php
 // Список разрешенных MIME файлов
 define('PERMIT_MIME_TYPES', ['image/pjpeg', 'image/jpeg', 'image/png']);
 
@@ -45,13 +46,6 @@ define(
         author_id
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, 1);'
-);
-
-//login.php
-// Запрос списка категорий
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
 );
 
 // Запрос e-mail из таблицы users
@@ -82,12 +76,6 @@ define(
     FROM lots
     JOIN categories ON lots.category_id = categories.id
     WHERE lots.id = ?;'
-);
-
-// Запрос списока категорий
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
 );
 
 // Запрос истории ставок
@@ -141,19 +129,7 @@ define(
     'SELECT id FROM users WHERE email = ?;'
 );
 
-// sign-up.php
-// Запрос списока категорий
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
-);
-
-// Запрос e-mail из таблицы users
-define(
-    'EMAIL_CHECK',
-    'SELECT email FROM users WHERE email = ?;'
-);
-
+// Запрос на добавление пользователя в табицу users
 define(
     'ADD_USER',
     'INSERT INTO users (
