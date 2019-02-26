@@ -1,5 +1,4 @@
 <?php
-
 define('HUMAN_MINUTES', ' минут назад');
 define('HUMAN_HOURS', ' часов назад');
 
@@ -89,6 +88,7 @@ function show_user_frendly_time($time) {
     return $date . ' ' . $time;
 }
 
+// Работа с загружаемым изображением
 function remove_image($path, $tmp_name) {
     // Разберем путь файла на составляющие
     $path = pathinfo($path);
