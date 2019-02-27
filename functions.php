@@ -1,5 +1,4 @@
 <?php
-
 define('HUMAN_MINUTES', ' минут назад');
 define('HUMAN_HOURS', ' часов назад');
 
@@ -9,8 +8,8 @@ session_start();
 // Функция для форматирования суммы
 function show_price($price) {
     $price = ceil($price);
-    $price = number_format($price, 0, "", " ");
-    return $price . " &#8381;";
+    $price = number_format($price, 0, '', ' ');
+    return $price . ' &#8381;';
 }
 
 // Функция шаблонизатор
@@ -89,6 +88,7 @@ function show_user_frendly_time($time) {
     return $date . ' ' . $time;
 }
 
+// Работа с загружаемым изображением
 function remove_image($path, $tmp_name) {
     // Разберем путь файла на составляющие
     $path = pathinfo($path);
@@ -101,4 +101,39 @@ function remove_image($path, $tmp_name) {
 
     // Вернем название нового файла, чтобы верно прописать в БД путь к изображению
     return $uniq_path;
+}
+
+function get_categories_db($con) {
+    //Получаем список категорий из БД
+    $arr = mysqli_query($con, CATEGORIES_LIST);
+    $arr = mysqli_fetch_all($arr, MYSQLI_ASSOC);
+    return $arr;
+}
+
+// Получение списка категорий в виде простого массива
+function get_categories_list($con) {
+    $categories = [];
+
+    $rows_categories = get_categories_db($con);
+
+    foreach($rows_categories as $category) {
+        array_push($categories, $category['categories']);
+    }
+
+    return $categories;
+}
+
+// Получение ID категории из названия категории
+function get_category_id($con, $category) {
+    $rows_categories = get_categories_db($con);
+
+    foreach($rows_categories as $row) {
+        if(isset($row['categories'])) {
+            if($category === $row['categories']) {
+                $category_id = $row['id'];
+            }
+        }
+    }
+
+    return $category_id;
 }

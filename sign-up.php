@@ -1,33 +1,7 @@
 <?php
-// Запрос списока категорий
-define(
-    'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
-);
-
-// Запрос e-mail из таблицы users
-define(
-    'EMAIL_CHECK',
-    'SELECT email FROM users WHERE email = ?;'
-);
-
-define(
-    'ADD_USER',
-    'INSERT INTO users (
-         email,
-         password,
-         name,
-         contact,
-         avatar
-    )
-    VALUES (?, ?, ?, ?, ?);'
-);
-
-// Список разрешенных MIME файлов
-define('PERMIT_MIME_TYPES', ['image/pjpeg', 'image/jpeg', 'image/png']);
-
-require_once('functions.php');
 require_once('connect.php');
+require_once('constants.php');
+require_once('functions.php');
 
 $errors = false;
 
@@ -122,10 +96,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $user_data['image'] = '';
             }
-            
+
             // Сразу залогинем пользователя после регистрации
-            session_start();
             $_SESSION['user'] = $user_data['name'];
+            $_SESSION['email'] = $user_data['email'];
             header('Location: ./');
         }
     }

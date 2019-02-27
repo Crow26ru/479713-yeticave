@@ -15,7 +15,7 @@
               <div class="lot__state">
                 <div class="lot__rate">
                   <span class="lot__amount">Стартовая цена</span>
-                  <span class="lot__cost"><?=show_price($lot['start_cost']);?></span>
+                  <span class="lot__cost"><?=show_price($lot['price']);?></span>
                 </div>
                 <div class="lot__timer timer">
                   <?=get_time_of_end_lot($lot['time'], true);?> <!-- Формат hh:mm:ss -->
