@@ -2,7 +2,7 @@
 // Запрос на получение списка категорий
 define(
     'CATEGORIES_LIST',
-    'SELECT name AS categories FROM categories;'
+    'SELECT id, name AS categories FROM categories;'
 );
 
 // Запрос на получение последних лотов (не более 9)
@@ -24,13 +24,6 @@ define(
 
 // Список разрешенных MIME файлов
 define('PERMIT_MIME_TYPES', ['image/pjpeg', 'image/jpeg', 'image/png']);
-
-// Запрос на получение таблицы категорий
-define(
-    'GET_CATEGORIES_TAB',
-    'SELECT * FROM categories
-     ORDER BY id;'
-);
 
 // Запрос на добавление лота
 define(
