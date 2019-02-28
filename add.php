@@ -33,33 +33,19 @@ if(!$con) {
                     $errors[$key] = 'Выберите категорию';
                 }
             }
-
-            // Проверяем поля начальной ставки и шага ставки, что у них числовое значение
-            foreach($lot as $key => $value) {
-                if($key === 'lot-rate' || $key === 'lot-step') {
-                    if(!filter_var($value, FILTER_VALIDATE_INT)) {
-                        $errors[$key] = 'Введенное значение не является целым числом.';
-                    } else {
-                        if($value <= 0) {
-                            $errors[$key] = 'Введенное значение должно быть положительным числом.';
-                        }
-                    }
-                }
+            
+            if(!check_positive_int($lot['lot-rate'])) {
+                $errors['lot-rate'] = 'Введите положительное число';
+            }
+               
+            if(!check_positive_int($lot['lot-step'])) {
+                $errors['lot-step'] = 'Введите положительное число';
             }
 
             // Проверяем дату
-            $date_arr = explode('.', $lot['lot-date']);
-            if(count($date_arr) !== 3) {
-                $errors['lot-date'] = 'Дата введена неверно';
-            } else if(strlen($date_arr[0]) !== 2 || strlen($date_arr[1]) !== 2 || strlen($date_arr[2]) !== 4) {
-                $errors['lot-date'] = 'Дата введена неверно';
-            } else if(!is_numeric($date_arr[0]) || !is_numeric($date_arr[1]) || !is_numeric($date_arr[2])) {
-                $errors['lot-date'] = 'Дата введена неверно';
-            } else if(!checkdate($date_arr[1], $date_arr[0], $date_arr[2])) {
-                $errors['lot-date'] = 'Дата введена неверно';
-            } else if(strtotime($lot['lot-date']) <= (time())) {
-                $errors['lot-date'] = 'Дата введена неверно';
-            }
+            if(!check_date_format($lot['lot-date'])) {
+                $errors['lot-date'] = 'Укажите дату завершения торгов в формате ДД.ММ.ГГГГ';
+            };
 
             // Проверяем был ли загружен файл
             if($_FILES['image']['name']) {
@@ -81,6 +67,10 @@ if(!$con) {
                 $path = $_FILES['image']['name'];
                 $lot['image'] = remove_image($path, $tmp_name);
                 $category_id = get_category_id($con, $lot['category']);
+                
+                // Фильтрация данных перед добавлением в БД
+                $lot['lot-name'] = htmlspecialchars($lot['lot-name']);
+                $lot['message'] = htmlspecialchars($lot['message']);
 
                 $stmt = mysqli_prepare($con, ADD_LOT);
                 mysqli_stmt_bind_param($stmt, 'ssssssi',

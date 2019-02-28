@@ -50,6 +50,7 @@ if(!$con) {
             $date_end = mysqli_fetch_all($date_end, MYSQLI_ASSOC);
 
             if($lot) {
+                
                 // Преобразование двумерного ассоциативного массива из одного элемента в ассоциативный массив лота
                 if(isset($lot[0])){
                     $lot = $lot[0];
@@ -66,9 +67,6 @@ if(!$con) {
 
                 // Установка флага завершения торгов по лоту
                 $is_end = ($date_end <= time()) ? true : false;
-
-                // Записываем значение минимальной ставки
-                $lot['min_cost'] = $lot['step'] + $max_rate;
 
                 // Проверяем были ли ошибки при выполнении ставки
                 $error = '';
@@ -134,45 +132,38 @@ if(!$con) {
         } else if(!filter_var($_POST['cost'], FILTER_VALIDATE_INT)) {
             $error_code = 2;
         } else {
-            $cost = $_POST['cost'];
-
-            // Получение шага ставки
-            $stmt = mysqli_prepare($con, STEP_RATE);
+            $cost = intval($_POST['cost']);
+            
+            // Прочитать из БД информацию о стартовой ставке и шаге
+            // Прочитать из БД информацию о ставках на этот лот
+            // Если введеный шаг ставки <= минимального шага, то показать ошибку, иначе:
+            // Если до этого ставок не было, то в новую ставку записываем стартовую ставку + шаг, иначе:
+            // В новую ставку записываем сумму последней ставки с введенным шагом
+            
+            $stmt = mysqli_prepare($con, LOT);
             mysqli_stmt_bind_param($stmt, 's', $lot_id);
             mysqli_stmt_execute($stmt);
-            $step = mysqli_stmt_get_result($stmt);
-            $step = mysqli_fetch_all($step, MYSQLI_ASSOC);
-
-            // Получение последней ставки
-            $stmt = mysqli_prepare($con, RATES_HISTORY);
-            mysqli_stmt_bind_param($stmt, 's', $lot_id);
-            mysqli_stmt_execute($stmt);
-            $last_rate = mysqli_stmt_get_result($stmt);
-            $last_rate = mysqli_fetch_all($last_rate, MYSQLI_ASSOC);
-
-            // Если до этого ставок не было, то надо записать начальную ставку
-            if(!isset($last_rate[0]['rate'])) {
-                $stmt = mysqli_prepare($con, LOT);
+            $lot = mysqli_stmt_get_result($stmt);
+            $lot = mysqli_fetch_all($lot, MYSQLI_ASSOC);
+            $last_rate = intval($lot[0]['start_rate']);
+            $step = intval($lot[0]['step']);
+            
+            if($cost < $step) {
+                $error_code = 3;
+            } else {
+                // Получение последней ставки
+                $stmt = mysqli_prepare($con, RATES_HISTORY);
                 mysqli_stmt_bind_param($stmt, 's', $lot_id);
                 mysqli_stmt_execute($stmt);
                 $last_rate = mysqli_stmt_get_result($stmt);
                 $last_rate = mysqli_fetch_all($last_rate, MYSQLI_ASSOC);
-                $last_rate = $last_rate[0]['start_rate'];
-            } else {
-                $last_rate = $last_rate[0]['rate'];
-            }
-
-            $step = $step[0]['step_value'];
-
-            // Указываем минимальную ставку
-            $min_rate = intval($last_rate) + intval($step);
-
-            // Если минимальная ставка меньше или равна указанной ставке, то выполнить запросы и вернуть код ошибки 0
-            // Иначе вернем код ошибки 3
-            if($min_rate <= $cost) {
-                // Добавим ставку в таблицу rates
-                // Для добавления ставки нужно узнать ID пользователя
-                // Это можно сделать с помощью e-mail, который хранится в сессии
+                
+                if(!isset($last_rate[0]['rate'])) {
+                    $last_rate = $last_rate + $cost;
+                } else {
+                    $last_rate = intval($last_rate[0]['rate']) + $cost;
+                }
+                
                 $email = $_SESSION['email'];
 
                 // Выполняем запрос на получение ID
@@ -185,11 +176,10 @@ if(!$con) {
 
                 // Выполняем запрос на добавление ставки
                 $stmt = mysqli_prepare($con, ADD_RATE);
-                mysqli_stmt_bind_param($stmt, 'iss', $cost, $user_id, $lot_id);
+                mysqli_stmt_bind_param($stmt, 'iss', $last_rate, $user_id, $lot_id);
                 $is_add = mysqli_stmt_execute($stmt);
+                
                 $error_code = 0;
-            } else {
-                $error_code = 3;
             }
         }
 

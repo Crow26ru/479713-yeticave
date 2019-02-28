@@ -64,8 +64,19 @@ if(!$con) {
         // Если ошибок нет, то выполним запрос на добавление нового пользователя,
         // а если есть аватарка, то переместим её из временной папки
         if(!$errors) {
+            // Если есть автарка, то добавим её
+            if($_FILES['image']['name']) {
+                $tmp_name = $_FILES['image']['tmp_name'];
+                $path = $_FILES['image']['name'];
+                $user_data['image'] = remove_image($path, $tmp_name);
+            }
+            
             // Надо будет для начала захешировать пароль пользователя
             $pass = password_hash($user_data['password'], PASSWORD_DEFAULT);
+            
+            // Фильтрация данных перед добавлением в БД
+            $user_data['name'] = htmlspecialchars($user_data['name']);
+            $user_data['message'] = htmlspecialchars($user_data['message']);
 
             // Выполняем запрос на добавление пользователя в таблицу users
             $stmt = mysqli_prepare($con, ADD_USER);

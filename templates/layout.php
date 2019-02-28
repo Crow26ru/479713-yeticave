@@ -12,11 +12,7 @@
 <header class="main-header">
     <div class="main-header__container container">
         <h1 class="visually-hidden">YetiCave</h1>
-        <?php if($page_name === 'Главная - YetiCave'): ?>
-        <a class="main-header__logo">
-        <?php else: ?>
-        <a class="main-header__logo" href="/">
-        <?php endif; ?>
+        <a class="main-header__logo" <?=$page_name !== 'Главная - YetiCave' ? 'href="/"' : '';?>>
             <img src="img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
         </a>
         <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru">
@@ -28,38 +24,31 @@
         <nav class="user-menu">
         <?php if($user_name): ?>
         <div class="user-menu__logged">
-            <p><?=$user_name; ?></p>
+            <p><?=strip_tags($user_name); ?></p>
             <a href="logout.php">Выход</a>
         </div>
         <?php else: ?>
         <ul class="user-menu__list">
             <li class="user-menu__item">
-                <?php if($page_name === 'Регистрация - YetiCave'): ?>
-                <a>Регистрация</a>
-                <? else: ?>
-                <a href="sign-up.php">Регистрация</a>
-                <?php endif; ?>
+                <a <?=$page_name !== 'Регистрация - YetiCave' ? 'href="sign-up.php"' : '';?>>Регистрация</a>
             </li>
             <li class="user-menu__item">
-                <a href="login.php">Вход</a>
+                <a <?=$page_name !== 'Вход - YetiCave' ? 'href="login.php"' : '';?>>Вход</a>
             </li>
         </ul>
         <?php endif; ?>
-        <!-- здесь должен быть PHP код для показа имени пользователя -->
-
         </nav>
     </div>
 </header>
 
-<main <?php if($page_name === 'Главная - YetiCave'): ?>class="container"<?php endif; ?>>
-    <?= $content; ?>
+<main <?=$page_name === 'Главная - YetiCave' ? 'class="container"' : '';?>>
+    <?=$content;?>
 </main>
 </div>
 
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <!--заполните этот список из массива категорий-->
             <?php
                 foreach($categories as $key => $value):
             ?>
@@ -96,7 +85,7 @@
                 <svg width="27" height="27" viewBox="0 0 27 27" xmlns="http://www.w3.org/2000/svg"><circle stroke="#879296" fill="none" cx="13.5" cy="13.5" r="12.666"/><path fill="#879296" d="M13.92 18.07c.142-.016.278-.074.39-.166.077-.107.118-.237.116-.37 0 0 0-1.13.516-1.296.517-.165 1.208 1.09 1.95 1.58.276.213.624.314.973.28h1.95s.973-.057.525-.837c-.38-.62-.865-1.17-1.432-1.626-1.208-1.1-1.043-.916.41-2.816.886-1.16 1.236-1.86 1.13-2.163-.108-.302-.76-.214-.76-.214h-2.164c-.092-.026-.19-.026-.282 0-.083.058-.15.135-.195.225-.224.57-.49 1.125-.8 1.656-.973 1.61-1.344 1.697-1.51 1.59-.37-.234-.272-.975-.272-1.433 0-1.56.243-2.202-.468-2.377-.32-.075-.647-.108-.974-.098-.604-.052-1.213.01-1.793.186-.243.116-.438.38-.32.4.245.018.474.13.642.31.152.303.225.638.214.975 0 0 .127 1.832-.302 2.056-.43.223-.692-.167-1.55-1.618-.29-.506-.547-1.03-.77-1.57-.038-.09-.098-.17-.174-.233-.1-.065-.214-.108-.332-.128H6.485s-.312 0-.42.137c-.106.135 0 .36 0 .36.87 2 2.022 3.868 3.42 5.543.923.996 2.21 1.573 3.567 1.598z"/></svg>
             </a>
         </div>
-        <a class="main-footer__add-lot button" href="add-lot.html">Добавить лот</a>
+        <a class="main-footer__add-lot button" <?=$page_name !== 'Добавление лота - YetiCave' ? 'href="add.php"' : '';?>>Добавить лот</a>
         <div class="main-footer__developed-by">
             <span class="visually-hidden">Разработано:</span>
             <a class="logo-academy" href="https://htmlacademy.ru/intensive/php">

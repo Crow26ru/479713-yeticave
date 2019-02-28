@@ -21,7 +21,7 @@
                 <span class="lot-item__cost"><?=show_price($total_rate);?></span>
               </div>
               <div class="lot-item__min-cost">
-                Мин. ставка <span><?=show_price($lot['min_cost']);?></span>
+                Мин. ставка <span><?=show_price($lot['step']);?></span>
               </div>
             </div>
             <?php if($is_auth === 1 && !$is_end): ?>

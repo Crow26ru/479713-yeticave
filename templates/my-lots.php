@@ -14,7 +14,7 @@
                 <?=$rate['category'];?>
             </td>
             <td class="rates__timer">
-                <div class="timer timer--finishing"><?=get_time_of_end_lot($lot['time'], true);?></div> <!-- Формат hh:mm:ss -->
+                <div class="timer timer--finishing"><?=get_time_of_end_lot($lot['time'], true);?></div>
             </td>
             <td class="rates__price">
                 <?=show_price($rate['cost']);?>

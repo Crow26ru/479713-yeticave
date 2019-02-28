@@ -4,27 +4,12 @@
     $paginator - целочисленный массив [1, 2, 3, ..., n] для указания номеров страниц
 -->
 <ul class="pagination-list">
-    <?php if($id === 1): ?>
-    <li class="pagination-item pagination-item-prev pagination-item-active"><a>Назад</a></li>
-
-    <?php else: ?>
-    <li class="pagination-item pagination-item-prev"><a href="<?=$link;?>?id=<?=($id - 1);?>">Назад</a></li>
-    <?php endif; ?>
+    <li class="pagination-item pagination-item-prev <?=$id === 1 ? 'pagination-item-active' : '';?>"><a <?=$id !== 1 ? '\'href="' . <?=$first_page> . '"' : '';?>>Назад</a></li>
 
     <?php foreach($paginator as $item): ?>
-    <?php if($active_page === $item): ?>
-    <li class="pagination-item pagination-item-active"><a><?=$item;?></a></li>
-
-    <?php else: ?>
-    <li class="pagination-item"><a href="<?=$page;?>?id=<?=$id;?>"><?=$item;?></a></li>
-    <?php endif; ?>
+    <li class="pagination-item <?=$active_page === $item ? 'pagination-item-active' : '';?>"><a <?=$active_page !== $item ? '\'href="' . <?=$page;?> . '?id=' . <?=$id;?> . '"' : '';?>><?=$item;?></a></li>
 
     <?php endforeach; ?>
 
-    <?php if($id === count($paginator)): ?>
-    <li class="pagination-item pagination-item-next pagination-item-active"><a>Вперед</a></li>
-
-    <?php else: ?>
-    <li class="pagination-item pagination-item-next"><a href="<?=$link;?>?id=<?=($id + 1);?>">Вперед</a></li>
-    <?php endif; ?>
+    <li class="pagination-item pagination-item-next <?=$id === count($paginator) ? 'pagination-item-active' : '';?>"><a <?=$id !== count($paginator) ? '\'href="' . <?=$last_page> . '"' : '';?>>Вперед</a></li>
 </ul>
