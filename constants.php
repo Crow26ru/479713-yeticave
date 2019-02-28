@@ -89,7 +89,6 @@ define(
     'LAST_RATE',
     'SELECT max(rates.rate) AS max_rate
     FROM rates
-    JOIN users ON users.id = rates.user_id
     WHERE rates.lot_id = ?;'
 );
 
@@ -100,10 +99,12 @@ define(
 );
 
 // Запрос на получение шага ставки
+/*
 define(
     'STEP_RATE',
     'SELECT step_value FROM lots WHERE id = ?;'
 );
+*/
 
 // Запрос на добавление ставки
 define(

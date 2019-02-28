@@ -24,7 +24,7 @@
         <nav class="user-menu">
         <?php if($user_name): ?>
         <div class="user-menu__logged">
-            <p><?=$user_name; ?></p>
+            <p><?=strip_tags($user_name); ?></p>
             <a href="logout.php">Выход</a>
         </div>
         <?php else: ?>

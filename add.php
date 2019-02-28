@@ -67,6 +67,10 @@ if(!$con) {
                 $path = $_FILES['image']['name'];
                 $lot['image'] = remove_image($path, $tmp_name);
                 $category_id = get_category_id($con, $lot['category']);
+                
+                // Фильтрация данных перед добавлением в БД
+                $lot['lot-name'] = htmlspecialchars($lot['lot-name']);
+                $lot['message'] = htmlspecialchars($lot['message']);
 
                 $stmt = mysqli_prepare($con, ADD_LOT);
                 mysqli_stmt_bind_param($stmt, 'ssssssi',

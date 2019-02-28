@@ -73,6 +73,10 @@ if(!$con) {
             
             // Надо будет для начала захешировать пароль пользователя
             $pass = password_hash($user_data['password'], PASSWORD_DEFAULT);
+            
+            // Фильтрация данных перед добавлением в БД
+            $user_data['name'] = htmlspecialchars($user_data['name']);
+            $user_data['message'] = htmlspecialchars($user_data['message']);
 
             // Выполняем запрос на добавление пользователя в таблицу users
             $stmt = mysqli_prepare($con, ADD_USER);
