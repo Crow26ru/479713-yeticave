@@ -155,3 +155,12 @@ function check_date_format($date) {
     }
     return $result;
 }
+
+function get_id_user_db($con, $email) {
+    $stmt = mysqli_prepare($con, FIND_USER);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $user_id = mysqli_stmt_get_result($stmt);
+    $user_id = mysqli_fetch_all($user_id, MYSQLI_ASSOC);
+    return $user_id[0]['id'];
+}

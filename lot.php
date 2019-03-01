@@ -86,6 +86,29 @@ if(!$con) {
                     }
                 }
 
+                // Установка флага сокрытия блока добавления ставки
+                $is_hidden_rate = false;
+                // Попробуем вытащить ID пользователя
+                if($is_auth === 0) {
+                    $is_hidden_rate = true;
+                } else {
+                    $email = $_SESSION['email'];
+
+                    $user_id = get_id_user_db($con, $email);
+                    $author_id = $lot['author'];
+
+                    // Ищем ставки
+                    $stmt = mysqli_prepare($con, FIND_RATE);
+                    mysqli_stmt_bind_param($stmt, 'ss', $lot_id, $user_id);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                    // Если результат запроса не NULL, то пользователь ранее добавлял ставку
+                    $is_hidden_rate = isset($result[0]['id']) ? true : false;
+                    $is_hidden_rate = $user_id === $author_id ? true : false;
+                }
+
                 // Подключаем шаблоны
                 $categories_content = include_template('categories.php', ['categories'  => get_categories_list($con)]);
 
@@ -93,10 +116,10 @@ if(!$con) {
 
                 $main_content = include_template('lot.php', [
                                                                  'categories_list' => $categories_content,
-                                                                 'is_auth'         => $is_auth,
                                                                  'lot'             => $lot,
                                                                  'rates'           => $rates_content,
                                                                  'total_rate'      => $max_rate,
+                                                                 'is_hidden_rate'  => $is_hidden_rate,
                                                                  'is_end'          => $is_end,
                                                                  'error'           => $error,
                                                                  'lot_id'          => $lot_id
@@ -167,12 +190,7 @@ if(!$con) {
                 $email = $_SESSION['email'];
 
                 // Выполняем запрос на получение ID
-                $stmt = mysqli_prepare($con, FIND_USER);
-                mysqli_stmt_bind_param($stmt, 's', $email);
-                mysqli_stmt_execute($stmt);
-                $user_id = mysqli_stmt_get_result($stmt);
-                $user_id = mysqli_fetch_all($user_id, MYSQLI_ASSOC);
-                $user_id = $user_id[0]['id'];
+                $user_id = get_id_user_db($con, $email);
 
                 // Выполняем запрос на добавление ставки
                 $stmt = mysqli_prepare($con, ADD_RATE);
