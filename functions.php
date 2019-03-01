@@ -164,3 +164,33 @@ function get_id_user_db($con, $email) {
     $user_id = mysqli_fetch_all($user_id, MYSQLI_ASSOC);
     return $user_id[0]['id'];
 }
+
+/**
+* Выводит страницу, что поиск не дал результатов
+* @param resource $con Ресурс соединения с БД для получения категорий
+* @param string $user_name Имя пользователя
+* @param integer $is_auth Флаг определения авторизованного пользователя. 1 - авторизованный пользователь, 0 - гость
+* @return string Разметка страницы
+*/
+function get_page_search_not_found_result($con, $user_name, $is_auth) {
+    $title = 'Ошибка 404';
+    $message = 'Ничего не найдено по вашему запросу';
+        
+    $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
+
+    $page_content = include_template('404.php', [
+        'categories_list' => $categories_content,
+        'title'           => $title,
+        'message'         => $message
+    ]);
+    
+    $page = include_template('layout.php', [
+        'content'         => $page_content,
+        'categories'      => get_categories_list($con),
+        'user_name'       => $user_name,
+        'is_auth'         => $is_auth,
+        'page_name'       => $page_content
+    ]);
+    
+    return $page;
+}

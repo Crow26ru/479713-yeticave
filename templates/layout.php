@@ -15,9 +15,9 @@
         <a class="main-header__logo" <?=$page_name !== 'Главная - YetiCave' ? 'href="/"' : '';?>>
             <img src="img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
         </a>
-        <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru">
+        <form class="main-header__search" method="get" action="./search.php">
             <input type="search" name="search" placeholder="Поиск лота">
-            <input class="main-header__search-btn" type="submit" name="find" value="Найти">
+            <input class="main-header__search-btn" type="submit">
         </form>
         <a class="main-header__add-lot button" href="./add.php">Добавить лот</a>
 
