@@ -50,7 +50,7 @@ if(!$con) {
             $date_end = mysqli_fetch_all($date_end, MYSQLI_ASSOC);
 
             if($lot) {
-                
+
                 // Преобразование двумерного ассоциативного массива из одного элемента в ассоциативный массив лота
                 if(isset($lot[0])){
                     $lot = $lot[0];
@@ -133,21 +133,21 @@ if(!$con) {
             $error_code = 2;
         } else {
             $cost = intval($_POST['cost']);
-            
+
             // Прочитать из БД информацию о стартовой ставке и шаге
             // Прочитать из БД информацию о ставках на этот лот
             // Если введеный шаг ставки <= минимального шага, то показать ошибку, иначе:
             // Если до этого ставок не было, то в новую ставку записываем стартовую ставку + шаг, иначе:
             // В новую ставку записываем сумму последней ставки с введенным шагом
-            
+
             $stmt = mysqli_prepare($con, LOT);
             mysqli_stmt_bind_param($stmt, 's', $lot_id);
             mysqli_stmt_execute($stmt);
             $lot = mysqli_stmt_get_result($stmt);
             $lot = mysqli_fetch_all($lot, MYSQLI_ASSOC);
-            $last_rate = intval($lot[0]['start_rate']);
+            $start_rate = intval($lot[0]['start_rate']);
             $step = intval($lot[0]['step']);
-            
+
             if($cost < $step) {
                 $error_code = 3;
             } else {
@@ -157,13 +157,13 @@ if(!$con) {
                 mysqli_stmt_execute($stmt);
                 $last_rate = mysqli_stmt_get_result($stmt);
                 $last_rate = mysqli_fetch_all($last_rate, MYSQLI_ASSOC);
-                
+
                 if(!isset($last_rate[0]['rate'])) {
-                    $last_rate = $last_rate + $cost;
+                    $last_rate = $start_rate + $cost;
                 } else {
                     $last_rate = intval($last_rate[0]['rate']) + $cost;
                 }
-                
+
                 $email = $_SESSION['email'];
 
                 // Выполняем запрос на получение ID
@@ -178,7 +178,7 @@ if(!$con) {
                 $stmt = mysqli_prepare($con, ADD_RATE);
                 mysqli_stmt_bind_param($stmt, 'iss', $last_rate, $user_id, $lot_id);
                 $is_add = mysqli_stmt_execute($stmt);
-                
+
                 $error_code = 0;
             }
         }
