@@ -38,7 +38,7 @@ define(
         category_id,
         author_id
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, 1);'
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?);'
 );
 
 // Запрос e-mail из таблицы users
@@ -65,7 +65,8 @@ define(
         lots.start_rate AS start_rate,
         lots.date_end AS time,
         lots.step_value AS step,
-        categories.name AS category
+        categories.name AS category,
+        lots.author_id AS author
     FROM lots
     JOIN categories ON lots.category_id = categories.id
     WHERE lots.id = ?;'
@@ -170,3 +171,24 @@ define(
      LIMIT 9 OFSET ?;'
 );
 
+// Запрос на получение ставок пользователя по лоту
+define(
+    'FIND_RATE',
+    'SELECT * FROM rates WHERE lot_id = ? AND user_id = ?;'
+);
+
+// Запрос для полнотекстового поиска лотов
+define(
+    'FIND_LOTS',
+    'SELECT lots.name,
+        lots.description,
+        lots.image,
+        lots.start_rate AS cost,
+        lots.date_end AS time,
+        lots.step_value AS step,
+        categories.name AS category,
+        lots.author_id AS author
+    FROM lots
+    JOIN categories ON lots.category_id = categories.id
+    WHERE MATCH(lots.name, lots.description) AGAINST(?);'
+);

@@ -33,11 +33,11 @@ if(!$con) {
                     $errors[$key] = 'Выберите категорию';
                 }
             }
-            
+
             if(!check_positive_int($lot['lot-rate'])) {
                 $errors['lot-rate'] = 'Введите положительное число';
             }
-               
+
             if(!check_positive_int($lot['lot-step'])) {
                 $errors['lot-step'] = 'Введите положительное число';
             }
@@ -62,25 +62,29 @@ if(!$con) {
             }
 
             if(!$errors) {
+                $email = $_SESSION['email'];
+                $user_id = get_id_user_db($con, $email);
+
                 // Переместим из временной директории изображение и переименуем его
                 $tmp_name = $_FILES['image']['tmp_name'];
                 $path = $_FILES['image']['name'];
                 $lot['image'] = remove_image($path, $tmp_name);
                 $category_id = get_category_id($con, $lot['category']);
-                
+
                 // Фильтрация данных перед добавлением в БД
                 $lot['lot-name'] = htmlspecialchars($lot['lot-name']);
                 $lot['message'] = htmlspecialchars($lot['message']);
 
                 $stmt = mysqli_prepare($con, ADD_LOT);
-                mysqli_stmt_bind_param($stmt, 'ssssssi',
+                mysqli_stmt_bind_param($stmt, 'ssssssis',
                                        $lot['lot-name'],
                                        $lot['message'],
                                        $lot['image'],
                                        $lot['lot-rate'],
                                        $lot['lot-date'],
                                        $lot['lot-step'],
-                                       $category_id
+                                       $category_id,
+                                       $user_id
                                       );
                 $is_add = mysqli_stmt_execute($stmt);
                 if($is_add) {

@@ -155,3 +155,42 @@ function check_date_format($date) {
     }
     return $result;
 }
+
+function get_id_user_db($con, $email) {
+    $stmt = mysqli_prepare($con, FIND_USER);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $user_id = mysqli_stmt_get_result($stmt);
+    $user_id = mysqli_fetch_all($user_id, MYSQLI_ASSOC);
+    return $user_id[0]['id'];
+}
+
+/**
+* Формирует готовую для вывода страницу с ошибкой
+* @param resource $con Ресурс соединения с БД для получения категорий
+* @param string $title Заголовок ошибки
+* @param string $message Описание ошибки
+* @param string $user_name Имя пользователя
+* @param integer $is_auth Флаг определения авторизованного пользователя. 1 - авторизованный пользователь, 0 - гость
+* @return string Разметка страницы
+*/
+function get_page_error($con, $title, $message, $user_name, $is_auth) {
+    $page_name = 'Ошибка - YetiCave';
+    $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
+
+    $page_content = include_template('404.php', [
+        'categories_list' => $categories_content,
+        'title'           => $title,
+        'message'         => $message
+    ]);
+    
+    $page = include_template('layout.php', [
+        'content'         => $page_content,
+        'categories'      => get_categories_list($con),
+        'user_name'       => $user_name,
+        'is_auth'         => $is_auth,
+        'page_name'       => $page_name
+    ]);
+    
+    return $page;
+}

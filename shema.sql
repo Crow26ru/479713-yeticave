@@ -66,3 +66,6 @@ REFERENCES users(id);
 ALTER TABLE rates
 ADD FOREIGN KEY (lot_id)
 REFERENCES lots(id);
+
+-- Создание индекса для полнотекстового поиска
+CREATE FULLTEXT INDEX lot_search ON lots(name, description);
