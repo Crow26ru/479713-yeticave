@@ -166,16 +166,16 @@ function get_id_user_db($con, $email) {
 }
 
 /**
-* Выводит страницу, что поиск не дал результатов
+* Формирует готовую для вывода страницу с ошибкой
 * @param resource $con Ресурс соединения с БД для получения категорий
+* @param string $title Заголовок ошибки
+* @param string $message Описание ошибки
 * @param string $user_name Имя пользователя
 * @param integer $is_auth Флаг определения авторизованного пользователя. 1 - авторизованный пользователь, 0 - гость
 * @return string Разметка страницы
 */
-function get_page_search_not_found_result($con, $user_name, $is_auth) {
-    $title = 'Ошибка 404';
-    $message = 'Ничего не найдено по вашему запросу';
-        
+function get_page_error($con, $title, $message, $user_name, $is_auth) {
+    $page_name = 'Ошибка - YetiCave';
     $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
 
     $page_content = include_template('404.php', [
@@ -189,7 +189,7 @@ function get_page_search_not_found_result($con, $user_name, $is_auth) {
         'categories'      => get_categories_list($con),
         'user_name'       => $user_name,
         'is_auth'         => $is_auth,
-        'page_name'       => $page_content
+        'page_name'       => $page_name
     ]);
     
     return $page;
