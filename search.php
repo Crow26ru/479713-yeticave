@@ -28,7 +28,9 @@ if(!$con) {
         $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
         
         if(empty($result)) {
-            $page = get_page_search_not_found_result($con, $user_name, $is_auth);
+            $title = 'Ошибка 404';
+            $message = 'Ничего не найдено по вашему запросу';
+            $page = get_page_error($con, $title, $message, $user_name, $is_auth);
             print($page);
         } else {
             // Подключение шаблонов
@@ -56,7 +58,9 @@ if(!$con) {
         
     // Если нам отправили пустую строку, то выведем страницу, что ничего не найдено
     } else {
-        $page = get_page_search_not_found_result($con, $user_name, $is_auth);
+        $title = 'Ошибка 404';
+        $message = 'Ничего не найдено по вашему запросу';
+        $page = get_page_error($con, $title, $message, $user_name, $is_auth);
         print($page);
     }
 }
