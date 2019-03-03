@@ -5,14 +5,23 @@ define('HUMAN_HOURS', ' часов назад');
 date_default_timezone_set('Europe/Moscow');
 session_start();
 
-// Функция для форматирования суммы
+/**
+* Функция для форматирования суммы
+* @param integer $price Цена в числовом формате
+* @return string Отформатированная цена в денежном формате
+*/
 function show_price($price) {
     $price = ceil($price);
     $price = number_format($price, 0, '', ' ');
     return $price . ' &#8381;';
 }
 
-// Функция шаблонизатор
+/**
+* Функция шаблонизатор
+* @param string Файл шаблона
+* @param mixed[] Параметры передаваемые в шаблон
+* @return string Готовая часть разметки страницы
+*/
 function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -30,7 +39,12 @@ function include_template($name, $data) {
     return $result;
 }
 
-// Отображение окончания лота в формате ЧЧ:ММ
+/**
+* Отображение окончания лота в формате ЧЧ:ММ
+* @param string $time Дата и время полученные из БД
+* @param bool $is_hh_mm_ss_format Флаг формата вывода времени  
+* @return integer Метка времени завершения лота
+*/
 function get_time_of_end_lot($time, $is_hh_mm_ss_format = false) {
     $current_time = time();
     $time_lives_a_lot = strtotime($time);
@@ -64,11 +78,14 @@ function get_time_of_end_lot($time, $is_hh_mm_ss_format = false) {
     return $time_lives_a_lot;
 }
 
-// Отображение времени в удобном виде
+/**
+* Отображение в человеческом виде
+* @param string $time Дата и время полученные из БД
+* @return string Время завершения лота
+*/
 function show_user_frendly_time($time) {
     $current_time = time();
     $time_lives_a_lot = strtotime($time);
-
 
     $time_lives_a_lot = $current_time - $time_lives_a_lot;
     $hours = floor($time_lives_a_lot / 3600);
@@ -88,7 +105,12 @@ function show_user_frendly_time($time) {
     return $date . ' ' . $time;
 }
 
-// Работа с загружаемым изображением
+/**
+* Работа с загружаемым изображением
+* @param string $path Расположение загруженного изображения
+* @param string $tmp_name Название файла загруженного изображения
+* @return string Название переименованного файла изображения
+*/
 function remove_image($path, $tmp_name) {
     // Разберем путь файла на составляющие
     $path = pathinfo($path);
@@ -103,14 +125,22 @@ function remove_image($path, $tmp_name) {
     return $uniq_path;
 }
 
+/**
+* Получение всех данных из таблицы categories
+* @param resource $con Ресурс соединения с БД 
+* @return string[] Результат запроса
+*/
 function get_categories_db($con) {
-    //Получаем список категорий из БД
     $arr = mysqli_query($con, CATEGORIES_LIST);
     $arr = mysqli_fetch_all($arr, MYSQLI_ASSOC);
     return $arr;
 }
 
-// Получение списка категорий в виде простого массива
+/**
+* Получение списка категорий из таблицы categories
+* @param resource $con Ресурс соединения с БД 
+* @return string[] Результат запроса
+*/
 function get_categories_list($con) {
     $categories = [];
 
@@ -124,6 +154,12 @@ function get_categories_list($con) {
 }
 
 // Получение ID категории из названия категории
+/**
+* Получение ID категории из названия категории
+* @param resource $con Ресурс соединения с БД 
+* @param integer $category ID категории
+* @return string Название категории
+*/
 function get_category_id($con, $category) {
     $rows_categories = get_categories_db($con);
 
@@ -138,7 +174,11 @@ function get_category_id($con, $category) {
     return $category_id;
 }
 
-// Валидация на число
+/**
+* Валидация на целое положительное число
+* @param string $value Проверяемое значение
+* @return bool Флаг результата проверки
+*/
 function check_positive_int($value) {
     if(!filter_var($value, FILTER_VALIDATE_INT) || $value <= 0) {
         return false;
@@ -239,7 +279,7 @@ function select_stmt_query($con, $sql, $params) {
 * @param resource $con Ресурс соединения с БД
 * @param string $sql Запрос к БД в виде подготовленного выражения
 * @param mixed[] $params Параметры запроса
-* @return mixed[] $result Двумерный ассоциативный массив с результатами запроса или NULL если ничего не найдено
+* @return mixed[] $result Результат запроса
 */
 function insert_stmt_query($con, $sql, $params) {
     $stmt = mysqli_prepare($con, $sql);
