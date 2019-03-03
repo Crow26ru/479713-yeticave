@@ -157,7 +157,7 @@ define(
     FROM lots
     JOIN categories ON lots.category_id = categories.id
     WHERE MATCH(lots.name, lots.description) AGAINST(?)
-    ORDER BY lots.date_add LIMIT 9 OFSET ?;'
+    ORDER BY lots.date_add LIMIT 9 OFFSET ?;'
 );
 
 // Запрос на получение количества лотов по категории
