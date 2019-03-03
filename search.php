@@ -22,32 +22,44 @@ if(!$con) {
 } else {
     $search_words = $_GET['search'] ?? '';
     $search_words = trim($search_words);
+    $num_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+    $link = 'search.php?page=';
         
     if($search_words) {
-        // Выполнить запрос на получение лотов по поиску
-        $stmt = mysqli_prepare($con, FIND_LOTS);
-        mysqli_stmt_bind_param($stmt, 's', $search_words);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        // Ищем сколько было вообще найдено лотов 
+        $total_lots = select_stmt_query($con, FIND_LOTS_TOTAL, [$search_words]);
         
-        if(empty($result)) {
+        if(empty($total_lots)) {
             $title = 'Ошибка 404';
             $message = 'Ничего не найдено по вашему запросу';
             $page = get_page_error($con, $title, $message, $user_name, $is_auth);
             print($page);
         } else {
+            $total_lots = intval($total_lots[0]['total']);
+            $pages = intval(ceil($total_lots / LOTS_PAGE));
+            $ofset = ($num_page - 1) * LOTS_PAGE;
+            
+            // Формируем данные для пагинации
+            $paginator = get_array_paginator($num_page, $pages);
+            
+            // Выполнить запрос на получение лотов по поиску
+            $result = select_stmt_query($con, FIND_LOTS, [$search_words, $ofset]);
+            
             // Подключение шаблонов
             $categories_content = include_template('categories.php', ['categories' => get_categories_db($con)]);
-
-            // Временная заглушка, так как пока ещё не готова пагинация
-            $paginator_placeholder = '';
+            
+            $paginator_content = include_template('paginator.php', [
+                'paginator'   => $paginator,
+                'active_page' => $num_page,
+                'link'        => $link,
+                'total_pages' => $pages
+            ]);
 
             $page_content = include_template('search.php', [
                 'categories_list' => $categories_content,
                 'search_str'      => $search_words,
                 'lots'            => $result,
-                'paginator'       => $paginator_placeholder
+                'paginator'       => $paginator_content
             ]);
             $page = include_template('layout.php', [
                 'content'         => $page_content,

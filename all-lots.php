@@ -30,7 +30,7 @@ if(!$con) {
     $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
     print($page);
 } else {
-    $total_lots = select_stmt_query($con, TOTAL_LOTS_CATEGORY, $category_id);
+    $total_lots = select_stmt_query($con, TOTAL_LOTS_CATEGORY, [$category_id]);
     
     if(empty($total_lots)) {
         http_response_code(404);
@@ -44,5 +44,6 @@ if(!$con) {
         $ofset = ($num_page - 1) * LOTS_PAGE;
         
         $paginator = get_array_paginator($num_page, $pages);
+        var_dump($paginator);
     }
 }
