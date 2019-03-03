@@ -135,6 +135,14 @@ define(
     'SELECT * FROM rates WHERE lot_id = ? AND user_id = ?;'
 );
 
+// Запрос на получение количества найденых лотов
+define(
+    'FIND_LOTS_TOTAL',
+    'SELECT count(*) AS total
+    FROM lots
+    WHERE MATCH(lots.name, lots.description) AGAINST(?);'  
+);
+
 // Запрос для полнотекстового поиска лотов
 define(
     'FIND_LOTS',
@@ -148,7 +156,8 @@ define(
         lots.author_id AS author
     FROM lots
     JOIN categories ON lots.category_id = categories.id
-    WHERE MATCH(lots.name, lots.description) AGAINST(?);'
+    WHERE MATCH(lots.name, lots.description) AGAINST(?)
+    ORDER BY lots.date_add LIMIT 9 OFSET ?;'
 );
 
 // Запрос на получение количества лотов по категории
