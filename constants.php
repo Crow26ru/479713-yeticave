@@ -99,14 +99,6 @@ define(
     'SELECT date_end FROM lots WHERE id = ?;'
 );
 
-// Запрос на получение шага ставки
-/*
-define(
-    'STEP_RATE',
-    'SELECT step_value FROM lots WHERE id = ?;'
-);
-*/
-
 // Запрос на добавление ставки
 define(
     'ADD_RATE',
@@ -137,40 +129,6 @@ define(
     VALUES (?, ?, ?, ?, ?);'
 );
 
-// Запрос на получение последних лотов (не более 9) без смещения
-define(
-    'NEW_LOTS_CATEGORY_LIST',
-    'SELECT
-        lots.id,
-        lots.name,
-        categories.name AS category,
-        lots.start_rate AS price,
-        lots.image,
-        lots.date_end AS time
-     FROM lots
-     JOIN categories ON lots.category_id = categories.id
-     WHERE date_end > NOW() AND category_id = ?
-     ORDER BY date_add DESC
-     LIMIT 9;'
-);
-
-// Запрос на получение последних лотов (не более 9) со смещением
-define(
-    'NEW_LOTS_CATEGORY_LIST_OFSET',
-    'SELECT
-        lots.id,
-        lots.name,
-        categories.name AS category,
-        lots.start_rate AS price,
-        lots.image,
-        lots.date_end AS time
-     FROM lots
-     JOIN categories ON lots.category_id = categories.id
-     WHERE date_end > NOW() AND category_id = ?
-     ORDER BY date_add DESC
-     LIMIT 9 OFSET ?;'
-);
-
 // Запрос на получение ставок пользователя по лоту
 define(
     'FIND_RATE',
@@ -192,3 +150,29 @@ define(
     JOIN categories ON lots.category_id = categories.id
     WHERE MATCH(lots.name, lots.description) AGAINST(?);'
 );
+
+// Запрос на получение количества лотов по категории
+define(
+    'TOTAL_LOTS_CATEGORY',
+    'SELECT count(*) AS total FROM lots WHERE category_id = ?;'
+);
+
+// Запрос на получение последних лотов (не более 9) со смещением
+define(
+    'LOTS_CATEGORY_LIST',
+    'SELECT
+        lots.id,
+        lots.name,
+        categories.name AS category,
+        lots.start_rate AS price,
+        lots.image,
+        lots.date_end AS time
+     FROM lots
+     JOIN categories ON lots.category_id = categories.id
+     WHERE date_end > NOW() AND category_id = ?
+     ORDER BY date_add DESC
+     LIMIT 9 OFSET ?;'
+);
+
+// Сколько лотов отображать на странице
+define('LOTS_PAGE', 9);

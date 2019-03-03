@@ -14,7 +14,11 @@ if(isset($_SESSION['user'])) {
 }
 
 if(!$con) {
-    print('Ошибка соединения: ' . mysqli_connect_error());
+    http_response_code(500);
+    $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+    $error_message = 'Сайт временно недоступен. Попробуйте зайти позже';
+    $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+    print($page);
 } else {
     $search_words = $_GET['search'] ?? '';
     $search_words = trim($search_words);

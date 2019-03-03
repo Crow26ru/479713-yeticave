@@ -16,7 +16,11 @@ if(isset($_SESSION['user'])) {
 }
 
 if(!$con) {
-    print('Ошибка соединения: ' . mysqli_connect_error());
+    http_response_code(500);
+    $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+    $error_message = 'Сайт временно недоступен. Попробуйте зайти позже';
+    $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+    print($page);
 } else {
     if(isset($_SESSION['user'])) {
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -75,18 +79,17 @@ if(!$con) {
                 $lot['lot-name'] = htmlspecialchars($lot['lot-name']);
                 $lot['message'] = htmlspecialchars($lot['message']);
 
-                $stmt = mysqli_prepare($con, ADD_LOT);
-                mysqli_stmt_bind_param($stmt, 'ssssssis',
-                                       $lot['lot-name'],
-                                       $lot['message'],
-                                       $lot['image'],
-                                       $lot['lot-rate'],
-                                       $lot['lot-date'],
-                                       $lot['lot-step'],
-                                       $category_id,
-                                       $user_id
-                                      );
-                $is_add = mysqli_stmt_execute($stmt);
+                $is_add = insert_stmt_query($con, ADD_LOT, [
+                    $lot['lot-name'],
+                    $lot['message'],
+                    $lot['image'],
+                    $lot['lot-rate'],
+                    $lot['lot-date'],
+                    $lot['lot-step'],
+                    $category_id,
+                    $user_id
+                ]);
+
                 if($is_add) {
                     $lot_id = mysqli_insert_id($con);
 
@@ -95,20 +98,8 @@ if(!$con) {
                     http_response_code(500);
                     $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
                     $error_message = 'Попробуйте добавить лот позже.';
-
-                    $categories_list = include_template('categories.php', ['categories'  => get_categories_list($con)]);
-                    $fail_content = include_template('404.php', [
-                                                                  'categories_list'      => $categories_list,
-                                                                  'title'                => $error_title,
-                                                                  'message'              => $error_message
-                    ]);
-                    $page = include_template('layout.php', [
-                                                    'content'     => $fail_content,
-                                                    'categories'  => get_categories_list($con),
-                                                    'user_name'   => $user_name,
-                                                    'is_auth'     => $is_auth,
-                                                    'page_name'   => $page_name
-                    ]);
+                    $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+                    print($page);
                 }
             }
         }
@@ -116,16 +107,16 @@ if(!$con) {
 
         $categories_list = include_template('categories.php', ['categories' => get_categories_list($con)]);
         $add_lot = include_template('add-lot.php', [
-                                                       'categories_list' => $categories_list,
-                                                       'categories'      => get_categories_list($con),
-                                                       'errors'          => $errors
-                                                   ]);
+            'categories_list' => $categories_list,
+            'categories'      => get_categories_list($con),
+            'errors'          => $errors
+        ]);
         $page = include_template('layout.php', [
-                                                    'content'        => $add_lot,
-                                                    'categories'     => get_categories_list($con),
-                                                    'user_name'      => $user_name,
-                                                    'is_auth'        => $is_auth,
-                                                    'page_name'      => $page_name
+            'content'        => $add_lot,
+            'categories'     => get_categories_list($con),
+            'user_name'      => $user_name,
+            'is_auth'        => $is_auth,
+            'page_name'      => $page_name
         ]);
 
         print($page);
@@ -133,21 +124,7 @@ if(!$con) {
         http_response_code(403);
         $error_title = 'Ошибка 403: Доступ закрыт';
         $error_message = 'Эта страница доступна только для зарегистрированных пользователей.';
-
-        $categories_list = include_template('categories.php', ['categories' =>     get_categories_list($con)]);
-        $fail_content = include_template('404.php', [
-                                                        'categories_list'   =>     $categories_list,
-                                                        'title'             =>     $error_title,
-                                                        'message'           =>     $error_message
-        ]);
-        $page = include_template('layout.php', [
-                                                    'content'               => $fail_content,
-                                                    'categories'            => get_categories_list($con),
-                                                    'user_name'             => $user_name,
-                                                    'is_auth'               => $is_auth,
-                                                    'page_name'             => $page_name
-        ]);
-
+        $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
         print($page);
     }
 }

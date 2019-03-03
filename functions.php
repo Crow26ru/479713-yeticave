@@ -194,3 +194,87 @@ function get_page_error($con, $title, $message, $user_name, $is_auth) {
     
     return $page;
 }
+
+/**
+* Получение строки типов параметров для функции mysqli_stmt_bind_param()
+* @param mixed[] $params Параметры запроса
+* @return string Строка типов входных параметров
+*/
+function get_stmt_types($params) {
+    $map_params = ['string' => 's', 'integer' => 'i'];
+    $types = '';
+    
+    foreach($params as $param) {
+        $type = gettype($param);
+        foreach($map_params as $key => $value) {
+            if($type === $key) {
+                $types = $types . $value;
+            }
+        }
+    }
+    
+    return $types;
+}
+
+/*+
+* Делает запросы на получение данных из БД подготовленными выражениями
+* @param resource $con Ресурс соединения с БД
+* @param string $sql Запрос к БД в виде подготовленного выражения
+* @param mixed[] $params Параметры запроса
+* @return mixed[] $result Двумерный ассоциативный массив с результатами запроса или NULL если ничего не найдено
+*/
+function select_stmt_query($con, $sql, $params) {
+    $stmt = mysqli_prepare($con, $sql);
+    $types = get_stmt_types($params);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
+    return $result;
+}
+
+/*+
+* Делает запросы на доавление данных в БД подготовленными выражениями
+* @param resource $con Ресурс соединения с БД
+* @param string $sql Запрос к БД в виде подготовленного выражения
+* @param mixed[] $params Параметры запроса
+* @return mixed[] $result Двумерный ассоциативный массив с результатами запроса или NULL если ничего не найдено
+*/
+function insert_stmt_query($con, $sql, $params) {
+    $stmt = mysqli_prepare($con, $sql);
+    $types = get_stmt_types($params);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+
+    return mysqli_stmt_execute($stmt);
+}
+
+
+function get_array_paginator($active_page, $total_pages) {
+    if(($active_page === 1 || $active_page === 2) && $total_pages <= 3) {
+        return range(1, $total_pages);
+    }
+    
+    if($active_page === 1 && $total_pages > 3) {
+        $paginator = range(1, 3);
+        return array_push($paginator, $total_pages);
+    }
+    
+    if($active_page === 2 && $total_pages > 3) {
+        paginator = range(1, 4);
+        return array_push($paginator, $total_pages);
+    }
+    
+    if($total_pages === $active_page) {
+        return range($total_pages - 3, $total_pages);
+    }
+    
+    if($total_pages === $active_page - 1) {
+        return range($total_pages - 4, $total_pages);
+    }
+    
+    $paginator = range($active_page - 2, $active_page + 2);
+    $paginator = array_push($paginator, $total_pages);
+    $paginator = array_unshift($paginator, 1);
+    return $paginator;
+}

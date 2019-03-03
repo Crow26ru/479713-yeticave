@@ -24,7 +24,7 @@
                 Мин. ставка <span><?=show_price($lot['step']);?></span>
               </div>
             </div>
-            <?php if(!$is_hidden_rate): ?>
+            <?php if(!$is_hidden): ?>
             <form class="lot-item__form" action="lot.php" method="post">
               <?php if($error): ?>
               <p class="lot-item__form-item form__item form__item--invalid">
