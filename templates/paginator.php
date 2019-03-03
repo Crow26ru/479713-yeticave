@@ -1,15 +1,20 @@
 <!--
-    $link      - название страницы;
-    $id        - значение GET параметра для вывода контента страницы;
-    $paginator - целочисленный массив [1, 2, 3, ..., n] для указания номеров страниц
+    $link         - название страницы;
+    $active_page  - значение GET параметра для вывода контента страницы;
+    $paginator    - целочисленный массив [1, 2, 3, ..., n] для указания номеров страниц
+    $total_pages  - страниц всего
 -->
 <ul class="pagination-list">
-    <li class="pagination-item pagination-item-prev <?=$id === 1 ? 'pagination-item-active' : '';?>"><a <?=$id !== 1 ? '\'href="' . <?=$first_page> . '"' : '';?>>Назад</a></li>
+    <?php if($active_page !== 1): ?>
+    <li class="pagination-item pagination-item-prev"><a <?=$link . ($active_page - 1);?>>Назад</a></li>
+    <?php endif; ?>
 
     <?php foreach($paginator as $item): ?>
-    <li class="pagination-item <?=$active_page === $item ? 'pagination-item-active' : '';?>"><a <?=$active_page !== $item ? '\'href="' . <?=$page;?> . '?id=' . <?=$id;?> . '"' : '';?>><?=$item;?></a></li>
+    <li class="pagination-item <?=$active_page === $item ? 'pagination-item-active' : '';?>"><a <?=$active_page !== $item ? ($link . $item) : '';?>><?=$item;?></a></li>
 
     <?php endforeach; ?>
 
-    <li class="pagination-item pagination-item-next <?=$id === count($paginator) ? 'pagination-item-active' : '';?>"><a <?=$id !== count($paginator) ? '\'href="' . <?=$last_page> . '"' : '';?>>Вперед</a></li>
+    <?php if($active_page !== $total_pages) : ?>
+    <li class="pagination-item pagination-item-next"><a <?=$link . ($active_page + 1);?>>Вперед</a></li>
+    <?php endif; ?>
 </ul>
