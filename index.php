@@ -25,7 +25,7 @@ if(!$con) {
 
     // Подключение шаблонов
     $page_content = include_template('index.php', [
-        'categories'    => get_categories_list($con),
+        'categories'    => get_categories_db($con),
         'products'      => $rows_lots
     ]);
     $layout_content = include_template('layout.php', [
@@ -33,7 +33,7 @@ if(!$con) {
         'user_name'  => $user_name,
         'is_auth'    => $is_auth,
         'page_name'  => $page_name,
-        'categories' => get_categories_list($con)
+        'categories' => get_categories_db($con)
     ]);
 
     // Отправка сформированной разметки из шаблонов

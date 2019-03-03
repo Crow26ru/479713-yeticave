@@ -56,14 +56,14 @@ if(!$con) {
         }
     }
 
-    $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
+    $categories_content = include_template('categories.php', ['categories' => get_categories_db($con)]);
     $login_content = include_template('login.php',  [
         'categories_list' => $categories_content,
         'errors'          => $errors
     ]);
     $page = include_template('layout.php', [
         'content'         => $login_content,
-        'categories'      => get_categories_list($con),
+        'categories'      => get_categories_db($con),
         'user_name'       => $user_name,
         'is_auth'         => $is_auth,
         'page_name'       => $page_name

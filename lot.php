@@ -81,7 +81,7 @@ if(!$con) {
             }
 
             // Подключаем шаблоны
-            $categories_content = include_template('categories.php', ['categories'  => get_categories_list($con)]);
+            $categories_content = include_template('categories.php', ['categories'  => get_categories_db($con)]);
 
             $rates_content = include_template('history-rates.php', ['rates' => $rates_history]);
 
@@ -98,7 +98,7 @@ if(!$con) {
 
             $all_content = include_template('layout.php', [
                 'content'        => $main_content,
-                'categories'     => get_categories_list($con),
+                'categories'     => get_categories_db($con),
                 'user_name'      => $user_name,
                 'is_auth'        => $is_auth,
                 'page_name'      => $page_name

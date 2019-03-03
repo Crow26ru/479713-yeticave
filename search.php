@@ -38,7 +38,7 @@ if(!$con) {
             print($page);
         } else {
             // Подключение шаблонов
-            $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
+            $categories_content = include_template('categories.php', ['categories' => get_categories_db($con)]);
 
             // Временная заглушка, так как пока ещё не готова пагинация
             $paginator_placeholder = '';
@@ -51,7 +51,7 @@ if(!$con) {
             ]);
             $page = include_template('layout.php', [
                 'content'         => $page_content,
-                'categories'      => get_categories_list($con),
+                'categories'      => get_categories_db($con),
                 'user_name'       => $user_name,
                 'is_auth'         => $is_auth,
                 'page_name'       => $page_name

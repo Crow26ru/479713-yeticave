@@ -53,7 +53,7 @@
                 foreach($categories as $key => $value):
             ?>
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?=$categories[$key];?></a>
+                <a href="pages/all-lots.php?id=<?=$value['id'];?>"><?=$value['categories'];?></a>
             </li>
             <?php endforeach; ?>
         </ul>

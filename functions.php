@@ -176,7 +176,7 @@ function get_id_user_db($con, $email) {
 */
 function get_page_error($con, $title, $message, $user_name, $is_auth) {
     $page_name = 'Ошибка - YetiCave';
-    $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
+    $categories_content = include_template('categories.php', ['categories' => get_categories_db($con)]);
 
     $page_content = include_template('404.php', [
         'categories_list' => $categories_content,
@@ -186,7 +186,7 @@ function get_page_error($con, $title, $message, $user_name, $is_auth) {
     
     $page = include_template('layout.php', [
         'content'         => $page_content,
-        'categories'      => get_categories_list($con),
+        'categories'      => get_categories_db($con),
         'user_name'       => $user_name,
         'is_auth'         => $is_auth,
         'page_name'       => $page_name
@@ -261,7 +261,7 @@ function get_array_paginator($active_page, $total_pages) {
     }
     
     if($active_page === 2 && $total_pages > 3) {
-        paginator = range(1, 4);
+        $paginator = range(1, 4);
         return array_push($paginator, $total_pages);
     }
     

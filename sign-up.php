@@ -107,17 +107,17 @@ if(!$con) {
         }
     }
 
-    $categories_list = include_template('categories.php', ['categories' => get_categories_list($con)]);
+    $categories_list = include_template('categories.php', ['categories' => get_categories_db($con)]);
     $add_user = include_template('sign-up.php', [
-                                                   'categories_list' => $categories_list,
-                                                   'errors'          => $errors
-                                               ]);
+        'categories_list' => $categories_list,
+        'errors'          => $errors
+    ]);
     $page = include_template('layout.php', [
-                                                'content'        => $add_user,
-                                                'categories'     => get_categories_list($con),
-                                                'user_name'      => $user_name,
-                                                'is_auth'        => $is_auth,
-                                                'page_name'      => $page_name
+        'content'        => $add_user,
+        'categories'     => get_categories_db($con),
+        'user_name'      => $user_name,
+        'is_auth'        => $is_auth,
+        'page_name'      => $page_name
     ]);
 
     print($page);
