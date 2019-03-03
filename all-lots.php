@@ -3,76 +3,79 @@ require_once('connect.php');
 require_once('constants.php');
 require_once('functions.php');
 
-if(isset($_GET['id']) && isset($_GET['page'])) {
-    $category_id = $_GET['id'];
-    $page = $_GET['page'];
+$is_auth = 0;
+$is_good = false;
+$page_name = 'Добавление лота - YetiCave';
+$errors = false;
 
-    if(isset($_SESSION['user'])) {
-        $user_name = $_SESSION['user'];
-        $is_auth = 1;
-    } else {
-        $user_name = '';
-        $is_auth = 0;
-    }
-
-    $categories = [];
-    $rows_categories = mysqli_query($con, CATEGORIES_LIST);
-    $rows_categories = mysqli_fetch_all($rows_categories, MYSQLI_ASSOC);
-
-    foreach($rows_categories as $value) {
-        array_push($categories, $value['categories']);
-    }
-
-    // Задаём смещение
-    $ofset = ($page - 1) * 9;
-
-    if($ofset === 0) {
-        $stmt = mysqli_prepare($con, NEW_LOTS_CATEGORY_LIST);
-        mysqli_stmt_bind_param($stmt, 's', $category_id);
-        mysqli_stmt_execute($stmt);
-        $lots = mysqli_stmt_get_result($stmt);
-        $lots = mysqli_fetch_all($lots, MYSQLI_ASSOC);
-
-        // Шаблоны без пагинациии
-        $page_name = $lots[0]['category'] . ' - YetiCave';
-
-        $categories_list = include_template('categories.php', ['categories'  => $categories]);
-        $content = include_template('all-lots.php', [
-                                                        'categories_list' => $categories_list,
-                                                        'category'        => $lots[0]['category'],
-                                                        'lots'            => $lots,
-                                                        'paginator'       => ''
-        ]);
-        $page = include_template('layout.php', []);
-    } else {
-        $stmt = mysqli_prepare($con, NEW_LOTS_CATEGORY_LIST_OFSET);
-        mysqli_stmt_bind_param($stmt, 'si', $category_id, $ofset);
-        mysqli_stmt_execute($stmt);
-        $lots = mysqli_stmt_get_result($stmt);
-        $lots = mysqli_fetch_all($lots, MYSQLI_ASSOC);
-
-        $page_name = $lots[0]['category'] . ' - YetiCave';
-        // Шаблоны с пагинациией
-    }
+if(isset($_SESSION['user'])) {
+    $user_name = $_SESSION['user'];
+    $is_auth = 1;
 } else {
-    http_response_code(404);
-    $error_title = 'Ошибка 404: Страница не найдена';
-    $error_message = 'Данной страницы не существует на сайте.';
+    $user_name = '';
+}
 
-    $categories_content = include_template('categories.php', ['categories'      => $categories]);
 
-    $fail_content = include_template('404.php',              [
-                                                              'categories_list' => $categories_content,
-                                                              'title'           => $error_title,
-                                                              'message'         => $error_message
-    ]);
+if(isset($_GET['id'])) {
+    $category_id = $_GET['id'];
+}
 
-    $all_content = include_template('layout.php',            [
-                                                              'content'         => $fail_content,
-                                                              'categories'      => $categories,
-                                                              'user_name'       => $user_name,
-                                                              'is_auth'         => $is_auth,
-                                                              'page_name'       => $page_name
-                                                             ]);
-    print($all_content);
+// Если был передан номер страницы, то читаем его
+$num_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+if(!$con) {
+    http_response_code(500);
+    $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+    $error_message = 'Сайт временно недоступен. Попробуйте зайти позже';
+    $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+    print($page);
+} else {
+    $link = 'all-lots.php?page=';
+    $total_lots = select_stmt_query($con, TOTAL_LOTS_CATEGORY, [$category_id]);
+    
+    if($total_lots[0]['total'] === 0) {
+        http_response_code(404);
+        $title = 'Ошибка 404: Лоты не найдены';
+        $message = 'Нет активных лотов в данной категории.';
+        $page = get_page_error($con, $title, $message, $user_name, $is_auth);
+        print($page);
+    } else {
+        // Формируем параметры для пагинации
+        $total_lots = intval($total_lots[0]['total']);
+        $pages = intval(ceil($total_lots / LOTS_PAGE));
+        $ofset = ($num_page - 1) * LOTS_PAGE;
+        
+        // Собираем массив пагинации
+        $paginator = get_array_paginator($num_page, $pages);
+        
+        // Получаем лоты по категории
+        $lots = select_stmt_query($con, LOTS_CATEGORY_LIST, [$category_id, $ofset]);
+        
+        // Получаем название категории по её ID
+        $category = select_stmt_query($con, GET_CATEGORY, [$category_id]);
+        $category = $category[0]['name'];
+        
+        // Подключение шаблонов
+        $categories_content = include_template('categories.php', ['categories' => get_categories_db($con)]);
+        $paginator_content  = include_template('paginator.php', [
+            'paginator'   => $paginator,
+            'active_page' => $num_page,
+            'link'        => $link,
+            'total_pages' => $pages
+        ]);
+        $page_content = include_template('all-lots.php', [
+            'categories_list' => $categories_content,
+            'lots'            => $lots,
+            'category'        => $category,
+            'paginator'       => $paginator_content
+        ]);
+        $page = include_template('layout.php', [
+            'content'         => $page_content,
+            'categories'      => get_categories_db($con),
+            'user_name'       => $user_name,
+            'is_auth'         => $is_auth,
+            'page_name'       => $page_name
+        ]);
+        print($page);
+    }
 }

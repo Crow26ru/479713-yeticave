@@ -5,14 +5,23 @@ define('HUMAN_HOURS', ' часов назад');
 date_default_timezone_set('Europe/Moscow');
 session_start();
 
-// Функция для форматирования суммы
+/**
+* Функция для форматирования суммы
+* @param integer $price Цена в числовом формате
+* @return string Отформатированная цена в денежном формате
+*/
 function show_price($price) {
     $price = ceil($price);
     $price = number_format($price, 0, '', ' ');
     return $price . ' &#8381;';
 }
 
-// Функция шаблонизатор
+/**
+* Функция шаблонизатор
+* @param string Файл шаблона
+* @param mixed[] Параметры передаваемые в шаблон
+* @return string Готовая часть разметки страницы
+*/
 function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -30,7 +39,12 @@ function include_template($name, $data) {
     return $result;
 }
 
-// Отображение окончания лота в формате ЧЧ:ММ
+/**
+* Отображение окончания лота в формате ЧЧ:ММ
+* @param string $time Дата и время полученные из БД
+* @param bool $is_hh_mm_ss_format Флаг формата вывода времени  
+* @return integer Метка времени завершения лота
+*/
 function get_time_of_end_lot($time, $is_hh_mm_ss_format = false) {
     $current_time = time();
     $time_lives_a_lot = strtotime($time);
@@ -64,11 +78,14 @@ function get_time_of_end_lot($time, $is_hh_mm_ss_format = false) {
     return $time_lives_a_lot;
 }
 
-// Отображение времени в удобном виде
+/**
+* Отображение в человеческом виде
+* @param string $time Дата и время полученные из БД
+* @return string Время завершения лота
+*/
 function show_user_frendly_time($time) {
     $current_time = time();
     $time_lives_a_lot = strtotime($time);
-
 
     $time_lives_a_lot = $current_time - $time_lives_a_lot;
     $hours = floor($time_lives_a_lot / 3600);
@@ -88,7 +105,12 @@ function show_user_frendly_time($time) {
     return $date . ' ' . $time;
 }
 
-// Работа с загружаемым изображением
+/**
+* Работа с загружаемым изображением
+* @param string $path Расположение загруженного изображения
+* @param string $tmp_name Название файла загруженного изображения
+* @return string Название переименованного файла изображения
+*/
 function remove_image($path, $tmp_name) {
     // Разберем путь файла на составляющие
     $path = pathinfo($path);
@@ -103,14 +125,22 @@ function remove_image($path, $tmp_name) {
     return $uniq_path;
 }
 
+/**
+* Получение всех данных из таблицы categories
+* @param resource $con Ресурс соединения с БД 
+* @return string[] Результат запроса
+*/
 function get_categories_db($con) {
-    //Получаем список категорий из БД
     $arr = mysqli_query($con, CATEGORIES_LIST);
     $arr = mysqli_fetch_all($arr, MYSQLI_ASSOC);
     return $arr;
 }
 
-// Получение списка категорий в виде простого массива
+/**
+* Получение списка категорий из таблицы categories
+* @param resource $con Ресурс соединения с БД 
+* @return string[] Результат запроса
+*/
 function get_categories_list($con) {
     $categories = [];
 
@@ -124,6 +154,12 @@ function get_categories_list($con) {
 }
 
 // Получение ID категории из названия категории
+/**
+* Получение ID категории из названия категории
+* @param resource $con Ресурс соединения с БД 
+* @param integer $category ID категории
+* @return string Название категории
+*/
 function get_category_id($con, $category) {
     $rows_categories = get_categories_db($con);
 
@@ -138,7 +174,11 @@ function get_category_id($con, $category) {
     return $category_id;
 }
 
-// Валидация на число
+/**
+* Валидация на целое положительное число
+* @param string $value Проверяемое значение
+* @return bool Флаг результата проверки
+*/
 function check_positive_int($value) {
     if(!filter_var($value, FILTER_VALIDATE_INT) || $value <= 0) {
         return false;
@@ -176,7 +216,7 @@ function get_id_user_db($con, $email) {
 */
 function get_page_error($con, $title, $message, $user_name, $is_auth) {
     $page_name = 'Ошибка - YetiCave';
-    $categories_content = include_template('categories.php', ['categories' => get_categories_list($con)]);
+    $categories_content = include_template('categories.php', ['categories' => get_categories_db($con)]);
 
     $page_content = include_template('404.php', [
         'categories_list' => $categories_content,
@@ -186,11 +226,95 @@ function get_page_error($con, $title, $message, $user_name, $is_auth) {
     
     $page = include_template('layout.php', [
         'content'         => $page_content,
-        'categories'      => get_categories_list($con),
+        'categories'      => get_categories_db($con),
         'user_name'       => $user_name,
         'is_auth'         => $is_auth,
         'page_name'       => $page_name
     ]);
     
     return $page;
+}
+
+/**
+* Получение строки типов параметров для функции mysqli_stmt_bind_param()
+* @param mixed[] $params Параметры запроса
+* @return string Строка типов входных параметров
+*/
+function get_stmt_types($params) {
+    $map_params = ['string' => 's', 'integer' => 'i'];
+    $types = '';
+    
+    foreach($params as $param) {
+        $type = gettype($param);
+        foreach($map_params as $key => $value) {
+            if($type === $key) {
+                $types = $types . $value;
+            }
+        }
+    }
+    
+    return $types;
+}
+
+/*+
+* Делает запросы на получение данных из БД подготовленными выражениями
+* @param resource $con Ресурс соединения с БД
+* @param string $sql Запрос к БД в виде подготовленного выражения
+* @param mixed[] $params Параметры запроса
+* @return mixed[] $result Двумерный ассоциативный массив с результатами запроса или NULL если ничего не найдено
+*/
+function select_stmt_query($con, $sql, $params) {
+    $stmt = mysqli_prepare($con, $sql);
+    $types = get_stmt_types($params);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
+    return $result;
+}
+
+/*+
+* Делает запросы на доавление данных в БД подготовленными выражениями
+* @param resource $con Ресурс соединения с БД
+* @param string $sql Запрос к БД в виде подготовленного выражения
+* @param mixed[] $params Параметры запроса
+* @return mixed[] $result Результат запроса
+*/
+function insert_stmt_query($con, $sql, $params) {
+    $stmt = mysqli_prepare($con, $sql);
+    $types = get_stmt_types($params);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+
+    return mysqli_stmt_execute($stmt);
+}
+
+
+function get_array_paginator($active_page, $total_pages) {
+    if(($active_page === 1 || $active_page === 2) && $total_pages <= 3) {
+        return range(1, $total_pages);
+    }
+    
+    if($active_page === 1 && $total_pages > 3) {
+        $paginator = range(1, 3);
+        return array_push($paginator, $total_pages);
+    }
+    
+    if($active_page === 2 && $total_pages > 3) {
+        $paginator = range(1, 4);
+        return array_push($paginator, $total_pages);
+    }
+    
+    if($total_pages === $active_page) {
+        return range($total_pages - 3, $total_pages);
+    }
+    
+    if($total_pages === $active_page - 1) {
+        return range($total_pages - 4, $total_pages);
+    }
+    
+    $paginator = range($active_page - 2, $active_page + 2);
+    $paginator = array_push($paginator, $total_pages);
+    $paginator = array_unshift($paginator, 1);
+    return $paginator;
 }

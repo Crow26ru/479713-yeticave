@@ -5,6 +5,12 @@ define(
     'SELECT id, name AS categories FROM categories;'
 );
 
+// Запрос на получение категории по её ID
+define(
+    'GET_CATEGORY',
+    'SELECT name FROM categories WHERE id = ?;'
+);
+
 // Запрос на получение последних лотов (не более 9)
 define(
     'NEW_LOTS_LIST',
@@ -99,14 +105,6 @@ define(
     'SELECT date_end FROM lots WHERE id = ?;'
 );
 
-// Запрос на получение шага ставки
-/*
-define(
-    'STEP_RATE',
-    'SELECT step_value FROM lots WHERE id = ?;'
-);
-*/
-
 // Запрос на добавление ставки
 define(
     'ADD_RATE',
@@ -137,44 +135,18 @@ define(
     VALUES (?, ?, ?, ?, ?);'
 );
 
-// Запрос на получение последних лотов (не более 9) без смещения
-define(
-    'NEW_LOTS_CATEGORY_LIST',
-    'SELECT
-        lots.id,
-        lots.name,
-        categories.name AS category,
-        lots.start_rate AS price,
-        lots.image,
-        lots.date_end AS time
-     FROM lots
-     JOIN categories ON lots.category_id = categories.id
-     WHERE date_end > NOW() AND category_id = ?
-     ORDER BY date_add DESC
-     LIMIT 9;'
-);
-
-// Запрос на получение последних лотов (не более 9) со смещением
-define(
-    'NEW_LOTS_CATEGORY_LIST_OFSET',
-    'SELECT
-        lots.id,
-        lots.name,
-        categories.name AS category,
-        lots.start_rate AS price,
-        lots.image,
-        lots.date_end AS time
-     FROM lots
-     JOIN categories ON lots.category_id = categories.id
-     WHERE date_end > NOW() AND category_id = ?
-     ORDER BY date_add DESC
-     LIMIT 9 OFSET ?;'
-);
-
 // Запрос на получение ставок пользователя по лоту
 define(
     'FIND_RATE',
     'SELECT * FROM rates WHERE lot_id = ? AND user_id = ?;'
+);
+
+// Запрос на получение количества найденых лотов
+define(
+    'FIND_LOTS_TOTAL',
+    'SELECT count(*) AS total
+    FROM lots
+    WHERE MATCH(lots.name, lots.description) AGAINST(?);'  
 );
 
 // Запрос для полнотекстового поиска лотов
@@ -190,5 +162,33 @@ define(
         lots.author_id AS author
     FROM lots
     JOIN categories ON lots.category_id = categories.id
-    WHERE MATCH(lots.name, lots.description) AGAINST(?);'
+    WHERE MATCH(lots.name, lots.description) AGAINST(?) AND date_end > NOW()
+    ORDER BY lots.date_add DESC
+    LIMIT 9 OFFSET ?;'
 );
+
+// Запрос на получение количества лотов по категории
+define(
+    'TOTAL_LOTS_CATEGORY',
+    'SELECT count(*) AS total FROM lots WHERE category_id = ?;'
+);
+
+// Запрос на получение последних лотов (не более 9) со смещением
+define(
+    'LOTS_CATEGORY_LIST',
+    'SELECT
+        lots.id,
+        lots.name,
+        categories.name AS category,
+        lots.start_rate AS price,
+        lots.image,
+        lots.date_end AS time
+     FROM lots
+     JOIN categories ON lots.category_id = categories.id
+     WHERE date_end > NOW() AND category_id = ?
+     ORDER BY date_add DESC
+     LIMIT 9 OFFSET ?;'
+);
+
+// Сколько лотов отображать на странице
+define('LOTS_PAGE', 9);
