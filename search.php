@@ -29,7 +29,7 @@ if(!$con) {
         // Ищем сколько было вообще найдено лотов 
         $total_lots = select_stmt_query($con, FIND_LOTS_TOTAL, [$search_words]);
         
-        if(empty($total_lots)) {
+        if($total_lots[0]['total'] === 0) {
             $title = 'Ошибка 404';
             $message = 'Ничего не найдено по вашему запросу';
             $page = get_page_error($con, $title, $message, $user_name, $is_auth);

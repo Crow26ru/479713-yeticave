@@ -5,6 +5,12 @@ define(
     'SELECT id, name AS categories FROM categories;'
 );
 
+// Запрос на получение категории по её ID
+define(
+    'GET_CATEGORY',
+    'SELECT name FROM categories WHERE id = ?;'
+);
+
 // Запрос на получение последних лотов (не более 9)
 define(
     'NEW_LOTS_LIST',
@@ -156,8 +162,9 @@ define(
         lots.author_id AS author
     FROM lots
     JOIN categories ON lots.category_id = categories.id
-    WHERE MATCH(lots.name, lots.description) AGAINST(?)
-    ORDER BY lots.date_add LIMIT 9 OFFSET ?;'
+    WHERE MATCH(lots.name, lots.description) AGAINST(?) AND date_end > NOW()
+    ORDER BY lots.date_add DESC
+    LIMIT 9 OFFSET ?;'
 );
 
 // Запрос на получение количества лотов по категории
@@ -180,7 +187,7 @@ define(
      JOIN categories ON lots.category_id = categories.id
      WHERE date_end > NOW() AND category_id = ?
      ORDER BY date_add DESC
-     LIMIT 9 OFSET ?;'
+     LIMIT 9 OFFSET ?;'
 );
 
 // Сколько лотов отображать на странице
