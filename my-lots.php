@@ -58,10 +58,25 @@ if(!$con) {
 
                 $rate['is_finishing'] = $is_finishing;
                 $rate['is_end'] = $is_end;
-                $rate['is_winner'] = $is_winner;
+                $rate['is_win'] = $is_win;
             }
 
+            var_dump($user_rates); die();
 
+            $categories_list = include_template('categories.php', ['categories' => get_categories_db($con)]);
+            $page_content = include_template('my-lots.php', [
+                'categories_list' => $categories_list,
+                'rates'           => $user_rates
+            ]);
+            $page = include_template('layout.php', [
+                'content'        => $page_content,
+                'categories'     => get_categories_db($con),
+                'user_name'      => $user_name,
+                'is_auth'        => $is_auth,
+                'page_name'      => $page_name
+            ]);
+
+        print($page);
         }
     }
 }
