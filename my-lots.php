@@ -48,7 +48,6 @@ if(!$con) {
                 $is_end = false;
                 $is_win = false;
                 $time_end = strtotime($rate['time']) - time();
-                $rate['time'] = get_time_of_end_lot($rate['time']);
 
                 if($time_end <= 3600 && $time_end > 0) {
                     $is_finishing = true;
