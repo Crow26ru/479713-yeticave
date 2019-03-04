@@ -61,7 +61,6 @@ define(
      WHERE email = ?;'
 );
 
-//lot.php
 // Запрос списка лотов
 define(
     'LOT',
@@ -146,7 +145,7 @@ define(
     'FIND_LOTS_TOTAL',
     'SELECT count(*) AS total
     FROM lots
-    WHERE MATCH(lots.name, lots.description) AGAINST(?);'  
+    WHERE MATCH(lots.name, lots.description) AGAINST(?);'
 );
 
 // Запрос для полнотекстового поиска лотов
@@ -192,3 +191,18 @@ define(
 
 // Сколько лотов отображать на странице
 define('LOTS_PAGE', 9);
+
+// Запрос на получение ставок пользователя
+define(
+    'USER_RATES',
+    'SELECT
+         rates.rate,
+         lots.image,
+         lots.name,
+         lots.date_end AS time,
+         rates.date_add
+     FROM rates
+     JOIN lots AS rates.lot_id = lots.id
+     JOIN categories ON categories.id = lots.category_id
+     WHERE rates.user_id = ?;'
+);
