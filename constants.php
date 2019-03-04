@@ -199,10 +199,11 @@ define(
          rates.rate,
          lots.image,
          lots.name,
+         categories.name AS category,
          lots.date_end AS time,
          rates.date_add
      FROM rates
-     JOIN lots AS rates.lot_id = lots.id
+     JOIN lots ON lots.id = rates.lot_id
      JOIN categories ON categories.id = lots.category_id
      WHERE rates.user_id = ?;'
 );
