@@ -25,7 +25,7 @@
         <?php if($user_name): ?>
         <div class="user-menu__logged">
             <p><?=strip_tags($user_name); ?></p>
-            <a href="my-lots.php">Мои лоты</a>
+            <a href="my-lots.php">Мои ставки</a>
             <a href="logout.php">Выход</a>
         </div>
         <?php else: ?>
