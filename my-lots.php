@@ -2,6 +2,7 @@
 require_once('connect.php');
 require_once('constants.php');
 require_once('functions.php');
+require_once('update-db.php');
 
 $page_name = 'Мои лоты - YetiCave';
 
@@ -43,10 +44,10 @@ if(!$con) {
             $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
             print($page);
         } else {
-            foreach($user_rates as $rate) {
+            foreach($user_rates as $key => $rate) {
                 $is_finishing = false;
                 $is_end = false;
-                $is_win = false;
+                $is_win = $user_id === intval($rate['winner_id']) ? true : false;
                 $time_end = strtotime($rate['time']) - time();
 
                 if($time_end <= 3600 && $time_end > 0) {
@@ -55,12 +56,10 @@ if(!$con) {
                     $is_end = true;
                 }
 
-                $rate['is_finishing'] = $is_finishing;
-                $rate['is_end'] = $is_end;
-                $rate['is_win'] = $is_win;
+                $user_rates[$key]['is_finishing'] = $is_finishing;
+                $user_rates[$key]['is_end'] = $is_end;
+                $user_rates[$key]['is_win'] = $is_win;
             }
-
-            var_dump($user_rates); die();
 
             $categories_list = include_template('categories.php', ['categories' => get_categories_db($con)]);
             $page_content = include_template('my-lots.php', [

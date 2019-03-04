@@ -2,6 +2,7 @@
 require_once('connect.php');
 require_once('constants.php');
 require_once('functions.php');
+require_once('update-db.php');
 
 $is_good = false;
 $page_name = 'Аукцион - YetiCave';

@@ -1,10 +1,9 @@
 <?=$categories_list;?>
 <section class="rates container">
-    <?php var_dump($rates); ?>
     <h2>Мои ставки</h2>
     <table class="rates__list">
     <?php foreach($rates as $rate): ?>
-        <tr class="rates__item <?=$rate['is_win'] ? 'rates__item--win' : '';?> <?=$rate['is_end'] ? 'rates__item--end' : '';?>">
+        <tr class="rates__item <?=$rate['is_win'] ? 'rates__item--win' : ($rate['is_end'] ? 'rates__item--end' : '');?>">
             <td class="rates__info">
                 <div class="rates__img">
                     <img src="<?=$rate['image'];?>" width="54" height="40" alt="<?=$rate['category'];?>">

@@ -98,6 +98,15 @@ define(
     WHERE rates.lot_id = ?;'
 );
 
+// Ставка пользователя
+define(
+    'USER_RATE',
+    'SELECT max(rates.rate) AS max_rate, user_id
+    FROM rates
+    WHERE lot_id = ?
+    GROUP BY user_id;'
+);
+
 // Запрос даты окончания лота
 define(
     'DATE_END',
@@ -202,9 +211,25 @@ define(
          lots.name,
          categories.name AS category,
          lots.date_end AS time,
-         rates.date_add
+         rates.date_add,
+         lots.winner_id
      FROM rates
      JOIN lots ON lots.id = rates.lot_id
      JOIN categories ON categories.id = lots.category_id
-     WHERE rates.user_id = ?;'
+     WHERE rates.user_id = ?
+     ORDER BY rates.date_add DESC;'
+);
+
+// Запрос на получение всех лотов у которых дата завершения раньше текущей и нет победителя
+define(
+    'FINISHED_LOTS',
+    'SELECT id, winner_id FROM lots WHERE date_end < NOW() AND winner_id IS NULL;'
+);
+
+// Обновление таблицы победителей
+define(
+    'UPDATE_LOT',
+    'UPDATE lots
+     SET winner_id = ?
+     WHERE id = ?;'
 );

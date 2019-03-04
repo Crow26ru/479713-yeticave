@@ -2,6 +2,7 @@
 require_once('connect.php');
 require_once('constants.php');
 require_once('functions.php');
+require_once('update-db.php');
 
 $page_name = 'Поиск лотов - YetiCave';
 

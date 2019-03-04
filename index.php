@@ -5,6 +5,7 @@ $page_name = 'Главная - YetiCave';
 require_once('connect.php');
 require_once('constants.php');
 require_once('functions.php');
+require_once('update-db.php');
 
 if(isset($_SESSION['user'])) {
     $user_name = $_SESSION['user'];
