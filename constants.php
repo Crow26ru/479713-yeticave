@@ -101,10 +101,10 @@ define(
 // Ставка пользователя
 define(
     'USER_RATE',
-    'SELECT max(rates.rate) AS max_rate, user_id
+    'SELECT rate AS max_rate, user_id
     FROM rates
     WHERE lot_id = ?
-    GROUP BY user_id;'
+    ORDER BY rate DESC LIMIT 1;'
 );
 
 // Запрос даты окончания лота
