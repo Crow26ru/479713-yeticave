@@ -197,6 +197,7 @@ define(
     'USER_RATES',
     'SELECT
          rates.rate,
+         lots.id,
          lots.image,
          lots.name,
          categories.name AS category,
