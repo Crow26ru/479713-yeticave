@@ -130,6 +130,12 @@ define(
     'SELECT id FROM users WHERE email = ?;'
 );
 
+// Запрос на получение e-mail и имени пользователя по его ID
+define(
+    'FIND_USER_DATA',
+    'SELECT email, name FROM users WHERE id = ?;'
+);
+
 // Запрос на добавление пользователя в табицу users
 define(
     'ADD_USER',
@@ -223,7 +229,7 @@ define(
 // Запрос на получение всех лотов у которых дата завершения раньше текущей и нет победителя
 define(
     'FINISHED_LOTS',
-    'SELECT id, winner_id FROM lots WHERE date_end < NOW() AND winner_id IS NULL;'
+    'SELECT id, winner_id, name FROM lots WHERE date_end < NOW() AND winner_id IS NULL;'
 );
 
 // Обновление таблицы победителей

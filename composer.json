@@ -1,0 +1,9 @@
+{
+    "name": "crow26/yeticave",
+    "description": "Website Yeticave",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+      "swiftmailer/swiftmailer": "^6.0"
+    }
+}
