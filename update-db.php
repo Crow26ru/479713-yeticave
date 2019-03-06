@@ -39,7 +39,7 @@ if($con) {
                 $message = (new Swift_Message('	Ваша ставка победила'))
                     ->setFrom(['keks@phpdemo.ru' => 'Аукцион YetiCave'])
                     ->setTo([$email => $user_name])
-                    ->setBody($page);
+                    ->addPart($page, 'text/html');
 
                 $mailer->send($message);
             }
