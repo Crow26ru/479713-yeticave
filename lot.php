@@ -113,74 +113,76 @@ if(isset($_GET['id'])) {
     }
 }
 
+
 if(isset($_POST['id'])) {
-    /*
-      Коды ошибок ставки:
-      0 - Нет ошибки;
-      1 - Не указана ставка;
-      2 - Введено не численное значение;
-      3 - Ставка слишком низкая
-    */
     $is_good = true;
 
     $lot_id = $_POST['id'];
 
     if(!$_POST['cost']) {
         $error_code = 1;
+        $_SESSION['error_code'] = $error_code;
+        header('Location: ./lot.php?id=' . $lot_id);
+        die();
+
     } else if(!filter_var($_POST['cost'], FILTER_VALIDATE_INT)) {
         $error_code = 2;
-    } else {
-        $cost = intval($_POST['cost']);
-
-        // Прочитать из БД информацию о стартовой ставке и шаге
-        // Прочитать из БД информацию о ставках на этот лот
-        // Если введеный шаг ставки <= минимального шага, то показать ошибку, иначе:
-        // Если до этого ставок не было, то в новую ставку записываем стартовую ставку + шаг, иначе:
-        // В новую ставку записываем сумму последней ставки с введенным шагом
-
-        $lot = select_stmt_query($con, LOT, [$lot_id]);
-        $start_rate = intval($lot[0]['start_rate']);
-        $step = intval($lot[0]['step']);
-
-        if($cost < $step) {
-            $error_code = 3;
-        } else {
-            // Получение последней ставки
-            $last_rate = select_stmt_query($con, RATES_HISTORY, [$lot_id]);
-
-            if(!isset($last_rate[0]['rate'])) {
-                $last_rate = $start_rate + $cost;
-            } else {
-                $last_rate = intval($last_rate[0]['rate']) + $cost;
-            }
-
-            $email = $_SESSION['email'];
-
-            // Выполняем запрос на получение ID
-            $user_id = get_id_user_db($con, $email);
-
-            // Выполняем запрос на добавление ставки
-            $is_add = insert_stmt_query($con, ADD_RATE, [$last_rate, $user_id, $lot_id]);
-
-            if($is_add) {
-                $error_code = 0;
-            } else {
-                http_response_code(500);
-                $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
-                $error_message = 'Попробуйте добавить лот позже.';
-                get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
-                print($all_content);
-                die();
-            }
-        }
+        $_SESSION['error_code'] = $error_code;
+        header('Location: ./lot.php?id=' . $lot_id);
+        die();
     }
 
-    if($error_code !== 0) {
+    $cost = intval($_POST['cost']);
+
+    // Прочитать из БД информацию о стартовой ставке и шаге
+    // Прочитать из БД информацию о ставках на этот лот
+    // Если введеный шаг ставки <= минимального шага, то показать ошибку, иначе:
+    // Если до этого ставок не было, то в новую ставку записываем стартовую ставку + шаг, иначе:
+    // В новую ставку записываем сумму последней ставки с введенным шагом
+
+    $lot = select_stmt_query($con, LOT, [$lot_id]);
+    $start_rate = intval($lot[0]['start_rate']);
+    $step = intval($lot[0]['step']);
+
+    if($cost < $step) {
+        $error_code = 3;
         $_SESSION['error_code'] = $error_code;
+        header('Location: ./lot.php?id=' . $lot_id);
+        die();
+    }
+
+    // Получение последней ставки
+    $last_rate = select_stmt_query($con, RATES_HISTORY, [$lot_id]);
+
+    if(!isset($last_rate[0]['rate'])) {
+        $last_rate = $start_rate + $cost;
+    } else {
+        $last_rate = intval($last_rate[0]['rate']) + $cost;
+    }
+
+    $email = $_SESSION['email'];
+
+    // Выполняем запрос на получение ID
+    $user_id = get_id_user_db($con, $email);
+
+    // Выполняем запрос на добавление ставки
+    $is_add = insert_stmt_query($con, ADD_RATE, [$last_rate, $user_id, $lot_id]);
+
+    if($is_add) {
+        $error_code = 0;
+    } else {
+        http_response_code(500);
+        $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+        $error_message = 'Попробуйте добавить лот позже.';
+        get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+        print($all_content);
+        die();
     }
 
     header('Location: ./lot.php?id=' . $lot_id);
+    die();
 }
+
 
 if(!$is_good) {
     http_response_code(404);
