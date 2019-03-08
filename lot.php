@@ -125,7 +125,9 @@ if(isset($_POST['id'])) {
         header('Location: ./lot.php?id=' . $lot_id);
         die();
 
-    } else if(!filter_var($_POST['cost'], FILTER_VALIDATE_INT)) {
+    }
+
+    if(!filter_var($_POST['cost'], FILTER_VALIDATE_INT)) {
         $error_code = 2;
         $_SESSION['error_code'] = $error_code;
         header('Location: ./lot.php?id=' . $lot_id);
