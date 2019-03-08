@@ -274,7 +274,7 @@ function select_stmt_query($con, $sql, $params) {
     return $result;
 }
 
-/*+
+/**
 * Делает запросы на доавление данных в БД подготовленными выражениями
 * @param resource $con Ресурс соединения с БД
 * @param string $sql Запрос к БД в виде подготовленного выражения
@@ -289,7 +289,12 @@ function insert_stmt_query($con, $sql, $params) {
     return mysqli_stmt_execute($stmt);
 }
 
-
+/**
+* Создает целочисленный массив, который используется при создании пагинации
+* @param integer $active_page Номер активной страницы
+* @param integer $total_pages Всего страниц
+* @return integer[] $paginator Массив с номерами страниц для пагинации
+*/
 function get_array_paginator($active_page, $total_pages) {
     if(($active_page === 1 || $active_page === 2) && $total_pages <= 3) {
         return range(1, $total_pages);
