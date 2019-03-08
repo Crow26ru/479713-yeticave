@@ -166,7 +166,8 @@ define(
 // Запрос для полнотекстового поиска лотов
 define(
     'FIND_LOTS',
-    'SELECT lots.name,
+    'SELECT lots.id,
+        lots.name,
         lots.description,
         lots.image,
         lots.start_rate AS cost,
