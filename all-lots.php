@@ -66,7 +66,8 @@ $paginator_content  = include_template('paginator.php', [
     'paginator'   => $paginator,
     'active_page' => $num_page,
     'link'        => $link,
-    'total_pages' => $pages
+    'total_pages' => $pages,
+    'id'          => $category_id
 ]);
 $page_content = include_template('all-lots.php', [
     'categories_list' => $categories_content,

@@ -23,7 +23,7 @@ if(!$con) {
     die();
 }
 
-$search_words = $_GET['search'] ?? '';
+$search_words = $_GET['id'] ?? '';
 $search_words = trim($search_words);
 $num_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $link = 'search.php?page=';
@@ -57,7 +57,8 @@ if($search_words) {
         'paginator'   => $paginator,
         'active_page' => $num_page,
         'link'        => $link,
-        'total_pages' => $pages
+        'total_pages' => $pages,
+        'id'          => $search_words
     ]);
 
     $page_content = include_template('search.php', [
