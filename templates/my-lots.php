@@ -6,12 +6,12 @@
         <tr class="rates__item <?=$rate['is_win'] ? 'rates__item--win' : ($rate['is_end'] ? 'rates__item--end' : '');?>">
             <td class="rates__info">
                 <div class="rates__img">
-                    <img src="<?=$rate['image'];?>" width="54" height="40" alt="<?=$rate['category'];?>">
+                    <img src="<?=$rate['image'];?>" width="54" height="40" alt="<?=htmlspecialchars($rate['category']);?>">
                 </div>
                 <h3 class="rates__title"><a href="lot.php?id=<?=$rate['id'];?>"><?=strip_tags($rate['name']);?></a></h3>
             </td>
             <td class="rates__category">
-                <?=$rate['category'];?>
+                <?=htmlspecialchars($rate['category']);?>
             </td>
             <td class="rates__timer">
                 <div class="timer <?=$rate['is_finishing'] ? 'timer--finishing' : '';?> <?=$rate['is_end'] ? 'timer--end' : '';?> <?=$rate['is_win'] ? 'timer--win' : '';?>">

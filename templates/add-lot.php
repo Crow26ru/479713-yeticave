@@ -20,10 +20,10 @@ $date = $_POST['lot-date'] ?? '';
         </div>
         <div class="form__item <?=isset($errors['category']) ? 'form__item--invalid' : '';?>">
           <label for="category">Категория</label>
-          <select id="category" name="category" value="<?=$category;?>" required>
+          <select id="category" name="category" value="<?=htmlspecialchars($category);?>" required>
             <option>Выберите категорию</option>
             <?php foreach ($categories as $value): ?>
-              <option <?=$category === $value ? 'selected' : '';?>><?=$value;?></option>
+              <option <?=$category === $value ? 'selected' : '';?>><?=htmlspecialchars($value);?></option>
             <?php endforeach; ?>
           </select>
           <?php if(isset($errors['category'])):?>
