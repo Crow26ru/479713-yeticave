@@ -160,7 +160,7 @@ define(
     'FIND_LOTS_TOTAL',
     'SELECT count(*) AS total
     FROM lots
-    WHERE MATCH(lots.name, lots.description) AGAINST(?);'
+    WHERE MATCH(lots.name, lots.description) AGAINST(?) AND date_end > NOW();'
 );
 
 // Запрос для полнотекстового поиска лотов
@@ -184,7 +184,7 @@ define(
 // Запрос на получение количества лотов по категории
 define(
     'TOTAL_LOTS_CATEGORY',
-    'SELECT count(*) AS total FROM lots WHERE category_id = ?;'
+    'SELECT count(*) AS total FROM lots WHERE category_id = ? AND date_end > NOW();'
 );
 
 // Запрос на получение последних лотов (не более 9) со смещением
