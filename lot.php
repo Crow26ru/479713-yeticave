@@ -172,16 +172,15 @@ if(isset($_POST['id'])) {
 
     if($is_add) {
         $error_code = 0;
-    } else {
-        http_response_code(500);
-        $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
-        $error_message = 'Попробуйте добавить лот позже.';
-        get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
-        print($all_content);
+        header('Location: ./lot.php?id=' . $lot_id);
         die();
     }
 
-    header('Location: ./lot.php?id=' . $lot_id);
+    http_response_code(500);
+    $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+    $error_message = 'Попробуйте добавить лот позже.';
+    get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+    print($all_content);
     die();
 }
 

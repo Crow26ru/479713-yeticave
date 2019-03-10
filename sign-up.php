@@ -102,14 +102,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user'] = $user_data['name'];
             $_SESSION['email'] = $user_data['email'];
             header('Location: ./');
-        } else {
-            http_response_code(500);
-            $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
-            $error_message = 'Что-то пошло не так во время регистрации. Попробуйте зарегистрироваться позже';
-            $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
-            print($page);
             die();
         }
+
+        http_response_code(500);
+        $error_title = 'Ошибка 500: Внутреняя ошибка сервера';
+        $error_message = 'Что-то пошло не так во время регистрации. Попробуйте зарегистрироваться позже';
+        $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
+        print($page);
     }
 }
 
