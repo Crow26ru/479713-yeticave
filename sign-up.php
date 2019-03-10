@@ -110,6 +110,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = 'Что-то пошло не так во время регистрации. Попробуйте зарегистрироваться позже';
         $page = get_page_error($con, $error_title, $error_message, $user_name, $is_auth);
         print($page);
+        die();
     }
 }
 
